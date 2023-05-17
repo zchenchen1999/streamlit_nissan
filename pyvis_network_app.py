@@ -53,7 +53,7 @@ else:
     G = nx.from_pandas_edgelist(df_select, 'item1', 'item2', 'correlation')
 
     # Initiate PyVis network object
-    interview_net = Network(height='600px', width='1700px', bgcolor='white', font_color='black')
+    interview_net = Network(height='800px', width='1700px', bgcolor='white', font_color='black')
 
     # Take Networkx graph and translate it to a PyVis graph format
     interview_net.from_nx(G)
