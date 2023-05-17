@@ -58,8 +58,9 @@ if start_date and end_date and aspect_option:
             result_dict[row['p_year_month']] = row[aspect_option]
         print(list(result_dict.keys()))
         print(list(result_dict.values()))
-        fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()), width=650, height=500)
+        fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()))
         print()
+        # , width=650, height=500
         fig.update_layout(title=f'{aspect_option}_chart', template='plotly_dark')
         st.plotly_chart(fig)
 
