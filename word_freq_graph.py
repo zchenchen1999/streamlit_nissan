@@ -2,6 +2,7 @@ import streamlit as st
 import plotly.graph_objs as go
 from datetime import datetime
 from plotly.subplots import make_subplots
+import plotly.express as px
 import pandas as pd
 import datetime
 
@@ -52,7 +53,7 @@ if start_date and end_date and aspect_option:
     for index, row in grouped.iterrows():
         result_dict[row['p_year_month']] = row[aspect_option]
     
-    fig = go.line(x=list(result_dict.keys()), y=list(result_dict.values()), width=500, height=400)
+    fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()), width=500, height=400)
 
 
     # if Bubble_info != '成交量':
