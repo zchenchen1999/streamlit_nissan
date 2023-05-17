@@ -45,7 +45,7 @@ if start_date and end_date and aspect_option:
     df_select = df[(df['post_time'] > start_date) & (df['post_time'] < end_date)]
     st.dataframe(df_select)
     if (df_select.shape[0] == 0):
-        st.fail('時間區間內無資料 !')
+        st.warning('時間區間內無資料 !')
     else:
         st.success(f'資料篩選成功，共有 {df_select.shape[0]} 筆面試資料!')
     # 生成日期範圍並轉換為所需的字符串格式
