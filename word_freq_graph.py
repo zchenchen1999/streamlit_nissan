@@ -21,7 +21,7 @@ import pandas as pd
 import datetime
 
 #利用st.cache()快取沒有改變過的data
-@st.cache()
+# @st.cache()
 # 爬蟲程式
 def get_df(path=None):
     # 轉換日期
