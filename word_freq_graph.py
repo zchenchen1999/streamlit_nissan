@@ -52,9 +52,10 @@ if start_date and end_date and aspect_option:
     grouped = pd.DataFrame(df.groupby(df['p_year_month'])[aspect_option].sum()).reset_index()
     for index, row in grouped.iterrows():
         result_dict[row['p_year_month']] = row[aspect_option]
-    
-    fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()), width=500, height=400)
-
+    print(list(result_dict.keys()))
+    print(list(result_dict.values()))
+    fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()), width=1000, height=500)
+    print()
 
     # if Bubble_info != '成交量':
     #     #如果選項不同，畫圖則不同
