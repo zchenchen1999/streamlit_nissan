@@ -44,7 +44,7 @@ max_day = df['post_time'].max()
 
 st.sidebar.header('參數設定')
 start_date = st.date_input(label='選擇起始日期', value=min_day, min_value=min_day, max_value=max_day)
-end_date = st.date_input(label='選擇結束日期', value=start_time, min_value=start_time, max_value=max_day)
+end_date = st.date_input(label='選擇結束日期', value=start_date, min_value=start_date, max_value=max_day)
 aspect_list = ['成就感', '學習成長','創新', '薪資', '福利', '管理制度', '工作氛圍', '同事互動', '主管風格', '工作地點', '公司規模','工作環境', '產業前景', '輪調', '外派', '出差', '引擎', '馬力', '避震', '外觀', '操控', '安全','堅固', '配備', '價錢', '科技', '品質', '折舊', '品牌', '空間', '保養', '續航', '尺寸', '車種','驅動', '變速箱', '電資', '機械', '製造', '車輛工程', '品管', '多元性', '企業社會責任', '企業永續目標','面試', '徵才', '實習', '工作', '離職', '轉職', '新鮮人', '畢業', '出路', '能力', '招募人員','正向', '負向']
 aspect_option = st.selectbox('選擇構面',aspect_list)
 
