@@ -47,7 +47,7 @@ if start_date and end_date and aspect_option:
     if (df_select.shape[0] == 0):
         st.fail('時間區間內無資料 !')
     else:
-        st.success('時間區間內無資料 !')
+        st.success(f'資料篩選成功，共有 {df_select.shape[0]} 筆面試資料!')
     # 生成日期範圍並轉換為所需的字符串格式
         date_range = pd.date_range(start="{}-{}".format(start_date.year, start_date.month), end="{}-{}".format(end_date.year, end_date.month), freq='M').strftime('%Y-%m').tolist()
         # 創建字典，將每個日期設置為0
@@ -57,7 +57,7 @@ if start_date and end_date and aspect_option:
             result_dict[row['p_year_month']] = row[aspect_option]
         print(list(result_dict.keys()))
         print(list(result_dict.values()))
-        fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()), width=600, height=500)
+        fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()), width=650, height=500)
         print()
         fig.update_layout(title=f'{aspect_option}_chart', template='plotly_dark')
         st.plotly_chart(fig)
