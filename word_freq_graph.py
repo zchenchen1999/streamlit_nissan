@@ -1,18 +1,3 @@
-# # 詞頻計算圖
-# import streamlit as st
-# import pandas as pd
-# import numpy as np
-# import plotly.express as px
-
-# # 標題、文字
-# st.title("Sentiment Analysis of Tweets about US Airlines")
-# st.markdown("This application is a Streamlit dashboard to analyze the sentiment of tweets")
-
-# # sidebar 標題、文字
-# st.sidebar.title("Sentiment Analysis of Tweets about US Airline")
-# st.sidebar.markdown("This application is a Streamlit dashboard to analyze the sentiment of tweets")
-
-
 import streamlit as st
 import plotly.graph_objs as go
 from datetime import datetime
@@ -59,6 +44,16 @@ if start_date and end_date and aspect_option:
     df_select = df[(df['post_time'] > start_date) & (df['post_time'] < end_date)]
     st.dataframe(df_select)
     st.success('Load data success !')
+    # 生成日期範圍並轉換為所需的字符串格式
+    date_range = pd.date_range(start="{}-{}".format(start_date.year, start_date.month), end="{}-{}".format(end_date.year, end_date.month), freq='M').strftime('%Y-%m').tolist()
+    # 創建字典，將每個日期設置為0
+    result_dict = {date: 0 for date in date_range}
+    grouped = pd.DataFrame(df.groupby(df['p_year_month'])[aspect_option].sum()).reset_index()
+    for index, row in grouped.iterrows():
+        result_dict[row['p_year_month']] = row[aspect_option]
+    
+    fig = go.line(x=list(result_dict.keys()), y=list(result_dict.values()), width=500, height=400)
+
 
     # if Bubble_info != '成交量':
     #     #如果選項不同，畫圖則不同
@@ -101,9 +96,9 @@ if start_date and end_date and aspect_option:
     # fig.add_trace(trace1, row=1, col=1)
     # fig.add_trace(trace2, row=2, col=1)
 
-    # fig.update_layout(title=f'{stock_code}_chart', template='plotly_dark')
+    fig.update_layout(title=f'{aspect_option}_chart', template='plotly_dark')
 
 
-    # st.plotly_chart(fig)
+    st.plotly_chart(fig)
     #st.繪圖呈現
 # view rawapp.py hosted with ❤ by GitHub

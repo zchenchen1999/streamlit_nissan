@@ -61,6 +61,7 @@ else:
     interview_net.from_nx(G)
 
     # Generate network with specific layout settings
+    # 設定重力
     interview_net.repulsion(node_distance=420, central_gravity=0.33,
                        spring_length=110, spring_strength=0.10,
                        damping=0.95)
