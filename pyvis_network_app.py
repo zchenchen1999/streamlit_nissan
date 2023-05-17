@@ -36,7 +36,7 @@ selected_aspect = st.multiselect('選一個構面繪圖', aspect_list)
 # 實作 silder （選取關聯度）
 values = st.slider(
     '選擇關聯度區間',
-    -100.0, 100.0, (-10.0, 75.0))
+    -1.0, 1.0, (-0.75, 0.75))
 st.write('關聯度:', values)
 
 # 設定初始化顯示內容（當使用者沒有選擇任何東西時）
