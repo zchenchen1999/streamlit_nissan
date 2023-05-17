@@ -14,6 +14,7 @@ def get_df(path=None):
     date_format = '%Y.%m.%d'
     try:
         df = pd.read_csv(path)
+        df.drop(['Unnamed: 0'], axis=1,inplace=True)
         date_format = '%Y.%m.%d'
         df['post_time'] = df['post_time'].apply(lambda x: datetime.datetime.strptime(x, date_format).date())
     except:
