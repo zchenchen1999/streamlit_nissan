@@ -44,18 +44,23 @@ if start_date and end_date and aspect_option:
     #如果stock_code與month都有值的話，則畫圖
     df_select = df[(df['post_time'] > start_date) & (df['post_time'] < end_date)]
     st.dataframe(df_select)
-    st.success('Load data success !')
+    if (df_select.shape[0] == 0):
+        st.fail('時間區間內無資料 !')
+    else:
+        st.success('時間區間內無資料 !')
     # 生成日期範圍並轉換為所需的字符串格式
-    date_range = pd.date_range(start="{}-{}".format(start_date.year, start_date.month), end="{}-{}".format(end_date.year, end_date.month), freq='M').strftime('%Y-%m').tolist()
-    # 創建字典，將每個日期設置為0
-    result_dict = {date: 0 for date in date_range}
-    grouped = pd.DataFrame(df.groupby(df['p_year_month'])[aspect_option].sum()).reset_index()
-    for index, row in grouped.iterrows():
-        result_dict[row['p_year_month']] = row[aspect_option]
-    print(list(result_dict.keys()))
-    print(list(result_dict.values()))
-    fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()), width=1000, height=500)
-    print()
+        date_range = pd.date_range(start="{}-{}".format(start_date.year, start_date.month), end="{}-{}".format(end_date.year, end_date.month), freq='M').strftime('%Y-%m').tolist()
+        # 創建字典，將每個日期設置為0
+        result_dict = {date: 0 for date in date_range}
+        grouped = pd.DataFrame(df.groupby(df['p_year_month'])[aspect_option].sum()).reset_index()
+        for index, row in grouped.iterrows():
+            result_dict[row['p_year_month']] = row[aspect_option]
+        print(list(result_dict.keys()))
+        print(list(result_dict.values()))
+        fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()), width=600, height=500)
+        print()
+        fig.update_layout(title=f'{aspect_option}_chart', template='plotly_dark')
+        st.plotly_chart(fig)
 
     # if Bubble_info != '成交量':
     #     #如果選項不同，畫圖則不同
@@ -98,9 +103,6 @@ if start_date and end_date and aspect_option:
     # fig.add_trace(trace1, row=1, col=1)
     # fig.add_trace(trace2, row=2, col=1)
 
-    fig.update_layout(title=f'{aspect_option}_chart', template='plotly_dark')
 
-
-    st.plotly_chart(fig)
     #st.繪圖呈現
 # view rawapp.py hosted with ❤ by GitHub
