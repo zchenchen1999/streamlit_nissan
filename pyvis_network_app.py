@@ -17,31 +17,32 @@ import networkx as nx
 from pyvis.network import Network
 
 # 讀取資料 (CSV)
-df_interact = pd.read_csv('data/processed_drug_interactions.csv')
+df_interact = pd.read_csv('data/interview_corr.csv')
 
 # 設定標題
 st.title('面試趣 - 互動式字詞網路關係圖')
 
 # 定義下拉式選單選項（使用字母排序）
-drug_list = ['Metformin', 'Glipizide', 'Lisinopril', 'Simvastatin',
-            'Warfarin', 'Aspirin', 'Losartan', 'Ibuprofen']
-drug_list.sort()
+aspect_list = list(df_interact['class'].unique())
+aspect_list.sort()
+# drug_list = ['Metformin', 'Glipizide', 'Lisinopril', 'Simvastatin',
+#             'Warfarin', 'Aspirin', 'Losartan', 'Ibuprofen']
+# drug_list.sort()
 
 # 實作下來式選單（回傳一個 list）
-selected_drugs = st.multiselect('Select drug(s) to visualize', drug_list)
+selected_aspect = st.multiselect('選一個構面繪圖', aspect_list)
 
 # 設定初始化顯示內容（當使用者沒有選擇任何東西時）
-if len(selected_drugs) == 0:
+if len(selected_aspect) == 0:
     st.text('請選擇一項開始繪圖！')
 
 # 當使用者選擇至少一項內容時
 else:
-    df_select = df_interact.loc[df_interact['drug_1_name'].isin(selected_drugs) | \
-                                df_interact['drug_2_name'].isin(selected_drugs)]
+    df_select = df_interact.loc[df_interact['class'].isin(selected_aspect)]
     df_select = df_select.reset_index(drop=True)
 
     # Create networkx graph object from pandas dataframe
-    G = nx.from_pandas_edgelist(df_select, 'drug_1_name', 'drug_2_name', 'weight')
+    G = nx.from_pandas_edgelist(df_select, 'item1', 'item2', 'correlation')
 
     # Initiate PyVis network object
     drug_net = Network(height='600px', width='900px', bgcolor='white', font_color='black')
