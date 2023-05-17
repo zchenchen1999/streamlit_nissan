@@ -29,7 +29,7 @@ def get_df(path=None):
     try:
         df = pd.read_csv(path)
         date_format = '%Y.%m.%d'
-        df['post_time'] = df['post_time'].apply(lambda x: datetime.strptime(x, date_format).date())
+        df['post_time'] = df['post_time'].apply(lambda x: datetime.datetime.strptime(x, date_format).date())
     except:
         print("讀取資料失敗，請檢查路徑")
     return df
