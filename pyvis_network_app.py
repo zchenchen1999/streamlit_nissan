@@ -25,7 +25,7 @@ st.title('面試趣 - 互動式字詞網路關係圖')
 # 定義下拉式選單選項（使用字母排序）
 aspect_list = list(df_interact['class'].unique())
 aspect_list.sort()
-aspect_list.insert(0, "全部")
+# aspect_list.insert(0, "全部")
 # drug_list = ['Metformin', 'Glipizide', 'Lisinopril', 'Simvastatin',
 #             'Warfarin', 'Aspirin', 'Losartan', 'Ibuprofen']
 # drug_list.sort()
@@ -45,7 +45,9 @@ if len(selected_aspect) == 0:
 
 # 當使用者選擇至少一項內容時
 else:
+    # 依照構面該選資料
     df_select = df_interact.loc[df_interact['class'].isin(selected_aspect)]
+    # 依照關聯度篩選資料
     df_select = df_select[(df_select['correlation'] > values[0]) & (df_select['correlation'] < values[1])]
     df_select = df_select.reset_index(drop=True)
 
