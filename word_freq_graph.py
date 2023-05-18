@@ -70,6 +70,8 @@ if start_date and end_date and aspect_option:
             # 將每個月構面出現次數加入 dict
             for index, row in grouped.iterrows():
                 tmp_dict[row['p_year_month']] = row[a]
+            print(all_aspect_count)
+            print(tmp_dict)
             # add this aspect result to all list
             all_aspect_count[a] = tmp_dict.values()
             # all_aspect_count[f"{a}_label"] = [a for i in range(all_aspect_count.shape[0])]
