@@ -79,7 +79,7 @@ if start_date and end_date and aspect_option:
         # st.plotly_chart(fig)
 
         fig = go.Figure()
-        for k, v in all_aspect_count:
+        for k, v in all_aspect_count.items():
             fig.add_trace(
                 go.line(x=list(v.keys()), y=list(v.values()))
             )
