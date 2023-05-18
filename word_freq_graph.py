@@ -75,7 +75,7 @@ if start_date and end_date and aspect_option:
             # all_aspect_count[f"{a}_label"] = [a for i in range(all_aspect_count.shape[0])]
         # all_aspect_count.set_index('year_month', inplace=True)
         # 轉換成 tidt data (long data)
-        all_aspect_count = pd.melt(all_aspect_count, id_vars=all_aspect_count.columns[0], value_vars=all_aspect_count.columns[1:])
+        # all_aspect_count = pd.melt(all_aspect_count, id_vars=all_aspect_count.columns[0], value_vars=all_aspect_count.columns[1:])
 
 
         # ---------------------------------------- 畫折線圖 --------------------------------------- #
