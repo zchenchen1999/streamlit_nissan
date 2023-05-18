@@ -71,7 +71,7 @@ if start_date and end_date and aspect_option:
             for index, row in grouped.iterrows():
                 tmp_dict[row['p_year_month']] = row[a]
             # add this aspect result to all list
-            all_aspect_count[a] = tmp_dict.values()
+            # all_aspect_count[a] = tmp_dict.values()
             # all_aspect_count[f"{a}_label"] = [a for i in range(all_aspect_count.shape[0])]
         # all_aspect_count.set_index('year_month', inplace=True)
         # 轉換成 tidt data (long data)
