@@ -22,18 +22,25 @@ def get_df(path=None):
     return df
     #會返回一個DF
 df = get_df("data/dtm_result.csv")
+
+# --------------------------------- 設定基本資料 -------------------------------- #
+
+# 資料內最早、最晚出現時間
 min_day = df['post_time'].min()
 max_day = df['post_time'].max()
+# 構面清單
+aspect_list = ['成就感', '學習成長','創新', '薪資', '福利', '管理制度', '工作氛圍', '同事互動', '主管風格', '工作地點', '公司規模','工作環境', '產業前景', '輪調', '外派', '出差', '引擎', '馬力', '避震', '外觀', '操控', '安全','堅固', '配備', '價錢', '科技', '品質', '折舊', '品牌', '空間', '保養', '續航', '尺寸', '車種','驅動', '變速箱', '電資', '機械', '製造', '車輛工程', '品管', '多元性', '企業社會責任', '企業永續目標','面試', '徵才', '實習', '工作', '離職', '轉職', '新鮮人', '畢業', '出路', '能力', '招募人員','正向', '負向']
 
 # ---------------------------------- sidebar --------------------------------- #
 
-
-
 st.sidebar.header('參數設定')
+# 日期選擇器
 start_date = st.sidebar.date_input(label='選擇起始日期', value=min_day, min_value=min_day, max_value=max_day)
 end_date = st.sidebar.date_input(label='選擇結束日期', value=start_date, min_value=start_date, max_value=max_day)
-aspect_list = ['成就感', '學習成長','創新', '薪資', '福利', '管理制度', '工作氛圍', '同事互動', '主管風格', '工作地點', '公司規模','工作環境', '產業前景', '輪調', '外派', '出差', '引擎', '馬力', '避震', '外觀', '操控', '安全','堅固', '配備', '價錢', '科技', '品質', '折舊', '品牌', '空間', '保養', '續航', '尺寸', '車種','驅動', '變速箱', '電資', '機械', '製造', '車輛工程', '品管', '多元性', '企業社會責任', '企業永續目標','面試', '徵才', '實習', '工作', '離職', '轉職', '新鮮人', '畢業', '出路', '能力', '招募人員','正向', '負向']
-aspect_option = st.sidebar.selectbox('選擇構面',aspect_list)
+# 單選列表
+# aspect_option = st.sidebar.selectbox('選擇構面',aspect_list)
+# 多選列表
+aspect_option = st.sidebar.multiselect('選擇構面', aspect_list)
 
 # ----------------------------------- body ----------------------------------- #
 # st.image('./icon.png')
@@ -49,20 +56,36 @@ if start_date and end_date and aspect_option:
         st.warning('時間區間內無資料 !')
     else:
         st.success(f'資料篩選成功，共有 {df_select.shape[0]} 筆面試資料!')
-    # 生成日期範圍並轉換為所需的字符串格式
-        date_range = pd.date_range(start="{}-{}".format(start_date.year, start_date.month), end="{}-{}".format(end_date.year, end_date.month), freq='M').strftime('%Y-%m').tolist()
-        # 創建字典，將每個日期設置為0
-        result_dict = {date: 0 for date in date_range}
-        grouped = pd.DataFrame(df.groupby(df['p_year_month'])[aspect_option].sum()).reset_index()
-        for index, row in grouped.iterrows():
-            result_dict[row['p_year_month']] = row[aspect_option]
-        print(list(result_dict.keys()))
-        print(list(result_dict.values()))
-        fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()))
-        # , width=650, height=500
-        fig.update_layout(title=f'{aspect_option}_chart', template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
-        st.plotly_chart(fig)
 
+        # ----------------------------------- 設定每個月出現次數字典 --------------------------------- #
+        # 生成日期範圍並轉換為所需的字符串格式
+        date_range = pd.date_range(start="{}-{}".format(start_date.year, start_date.month), end="{}-{}".format(end_date.year, end_date.month), freq='M').strftime('%Y-%m').tolist()
+
+        all_aspect_count = {}
+        for a in aspect_option:
+            # 創建字典，將每個日期設置為0
+            result_dict = {date: 0 for date in date_range}
+            grouped = pd.DataFrame(df.groupby(df['p_year_month'])[a].sum()).reset_index()
+            # 將每個月構面出現次數加入 dict
+            for index, row in grouped.iterrows():
+                result_dict[row['p_year_month']] = row[a]
+            # add this aspect result to all list
+            all_aspect_count[a] = result_dict
+
+        # ---------------------------------------- 畫折線圖 --------------------------------------- #
+        # fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()))
+        # # 更新圖片資料（加入 x,y label）
+        # fig.update_layout(title=f'{aspect_option}_chart', template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
+        # st.plotly_chart(fig)
+
+        fig = go.Figure()
+        for k, v in all_aspect_count:
+            fig.add_trace(
+                go.line(x=list(v.keys()), y=list(v.values()))
+            )
+        fig.update_layout(title=f'{aspect_option}_chart', template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
+
+        st.plotly_chart(fig)
     # if Bubble_info != '成交量':
     #     #如果選項不同，畫圖則不同
     #     trace1 = go.Scatter(
