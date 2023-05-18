@@ -50,7 +50,7 @@ st.title('面試趣-構面討論趨勢圖')
 
 if start_date and end_date and aspect_option:
     #如果stock_code與month都有值的話，則畫圖
-    df_select = df[(df['post_time'] >= start_date) & (df['post_time'] < end_date)]
+    df_select = df[(df['post_time'] >= start_date) & (df['post_time'] <= end_date)]
     if (df_select.shape[0] == 0):
         st.warning('時間區間內無資料 !')
     else:
@@ -61,7 +61,7 @@ if start_date and end_date and aspect_option:
 
         # ----------------------------------- 設定每個月出現次數字典 --------------------------------- #
         # 生成日期範圍並轉換為所需的字符串格式
-        date_range = pd.date_range(start="{}-{}".format(start_date.year, start_date.month), end="{}-{}".format(end_date.year, end_date.month), freq='M').strftime('%Y-%m').tolist()
+        date_range = pd.date_range(start="{}-{}".format(start_date.year, start_date.month), end="{}-{}".format(end_date.year, end_date.month+1 if end_date.month != 12 else end_date.month), freq='M').strftime('%Y-%m').tolist()
         # result_dict = {date: 0 for date in date_range}
         all_aspect_count = pd.DataFrame(date_range, columns=['year_month'])
 
