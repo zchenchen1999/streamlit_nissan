@@ -77,14 +77,14 @@ if start_date and end_date and aspect_option:
             # all_aspect_count[f"{a}_label"] = [a for i in range(all_aspect_count.shape[0])]
         # all_aspect_count.set_index('year_month', inplace=True)
         # 轉換成 tidt data (long data)
-        # all_aspect_count = pd.melt(all_aspect_count, id_vars=all_aspect_count.columns[0], value_vars=all_aspect_count.columns[1:])
+        all_aspect_count = pd.melt(all_aspect_count, id_vars=all_aspect_count.columns[0], value_vars=all_aspect_count.columns[1:])
 
 
         # ---------------------------------------- 畫折線圖 --------------------------------------- #
-        # fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()), markers=True)
+        fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()), markers=True)
         # # 更新圖片資料（加入 x,y label）
-        # fig.update_layout(title=f'{aspect_option}_chart', template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
-        # st.plotly_chart(fig)
+        fig.update_layout(title=f'{aspect_option}_chart', template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
+        st.plotly_chart(fig)
         # fig = px.line(all_aspect_count, x=all_aspect_count['year_month'], y=all_aspect_count[''], color=all_aspect_count[])
         # fig = px.line(all_aspect_count, x=all_aspect_count.year_month, y=all_aspect_count.value, color=all_aspect_count.variable)
 
