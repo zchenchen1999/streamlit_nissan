@@ -51,11 +51,13 @@ st.title('面試趣-構面討論趨勢圖')
 if start_date and end_date and aspect_option:
     #如果stock_code與month都有值的話，則畫圖
     df_select = df[(df['post_time'] >= start_date) & (df['post_time'] <= end_date)]
-    st.dataframe(df_select)
     if (df_select.shape[0] == 0):
         st.warning('時間區間內無資料 !')
     else:
         st.success(f'資料篩選成功，共有 {df_select.shape[0]} 筆面試資料!')
+        # 要呈現給 user 的資料欄位
+        df_display = df_select[['vacancies', 'post_time', 'content']]
+        st.dataframe(df_display)
 
         # ----------------------------------- 設定每個月出現次數字典 --------------------------------- #
         # 生成日期範圍並轉換為所需的字符串格式
