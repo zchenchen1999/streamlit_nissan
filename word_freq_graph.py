@@ -78,7 +78,7 @@ if start_date and end_date and aspect_option:
         # ---------------------------------------- 畫折線圖 --------------------------------------- #
 
         # 直接利用 dataframe 的 long format (Tidy data) 來畫圖， X=> 時間, Y=> 數量, color=> 不同構面
-        fig = px.line(all_aspect_count, x=all_aspect_count.year_month, y=all_aspect_count.value, color=all_aspect_count.variable)
+        fig = px.line(all_aspect_count, x=all_aspect_count.year_month, y=all_aspect_count.value, color=all_aspect_count.variable, width=800)
         line_chart_title = "[時間區間]："+start_date.strftime("%Y/%m/%d") + "~" + end_date.strftime("%Y/%m/%d")
         fig.update_layout(title=line_chart_title, template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
         st.plotly_chart(fig)
