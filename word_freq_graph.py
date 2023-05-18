@@ -84,16 +84,16 @@ if start_date and end_date and aspect_option:
         # fig.update_layout(title=f'{aspect_option}_chart', template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
         # st.plotly_chart(fig)
         # fig = px.line(all_aspect_count, x=all_aspect_count['year_month'], y=all_aspect_count[''], color=all_aspect_count[])
-        fig = px.line(all_aspect_count, x=all_aspect_count.year_month, y=all_aspect_count.value, color=all_aspect_count.variable)
+        # fig = px.line(all_aspect_count, x=all_aspect_count.year_month, y=all_aspect_count.value, color=all_aspect_count.variable)
 
         # fig = go.Figure()
         # for col in all_aspect_count.columns.values.tolist():
         #     fig.add_trace(
         #         go.line(x=all_aspect_count[col].index, y=all_aspect_count[col].values)
         #     )
-        fig.update_layout(title=f'{aspect_option}_chart', template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
+        # fig.update_layout(title=f'{aspect_option}_chart', template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
 
-        st.plotly_chart(fig)
+        # st.plotly_chart(fig)
     # if Bubble_info != '成交量':
     #     #如果選項不同，畫圖則不同
     #     trace1 = go.Scatter(
