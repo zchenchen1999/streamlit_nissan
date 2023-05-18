@@ -72,7 +72,7 @@ if start_date and end_date and aspect_option:
                 tmp_dict[row['p_year_month']] = row[a]
             # add this aspect result to all list
             all_aspect_count[a] = tmp_dict.values()
-        all_aspect_count.set_index('year-month', inplace=True)
+        all_aspect_count.set_index('year_month', inplace=True)
 
         # ---------------------------------------- 畫折線圖 --------------------------------------- #
         # fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()), markers=True)
