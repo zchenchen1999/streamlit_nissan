@@ -50,7 +50,7 @@ st.title('面試趣-構面討論趨勢圖')
 
 if start_date and end_date and aspect_option:
     #如果stock_code與month都有值的話，則畫圖
-    df_select = df[(df['post_time'] > start_date) & (df['post_time'] < end_date)]
+    df_select = df[(df['post_time'] >= start_date) & (df['post_time'] <= end_date)]
     st.dataframe(df_select)
     if (df_select.shape[0] == 0):
         st.warning('時間區間內無資料 !')
@@ -59,29 +59,31 @@ if start_date and end_date and aspect_option:
 
         # ----------------------------------- 設定每個月出現次數字典 --------------------------------- #
         # 生成日期範圍並轉換為所需的字符串格式
-        date_range = pd.date_range(start="{}-{}".format(start_date.year, start_date.month), end="{}-{}".format(end_date.year, end_date.month), freq='M').strftime('%Y-%m').tolist()
+        date_range = pd.date_range(start="{}-{}".format(start_date.year, start_date.month), end="{}-{}".format(end_date.year, end_date.month+1), freq='M').strftime('%Y-%m').tolist()
+        result_dict = {date: 0 for date in date_range}
+        all_aspect_count = pd.DataFrame(result_dict.keys(), columns=['year_month'])
 
-        all_aspect_count = {}
         for a in aspect_option:
             # 創建字典，將每個日期設置為0
-            result_dict = {date: 0 for date in date_range}
+            tmp_dict = {date: 0 for date in date_range}
             grouped = pd.DataFrame(df.groupby(df['p_year_month'])[a].sum()).reset_index()
             # 將每個月構面出現次數加入 dict
             for index, row in grouped.iterrows():
-                result_dict[row['p_year_month']] = row[a]
+                tmp_dict[row['p_year_month']] = row[a]
             # add this aspect result to all list
-            all_aspect_count[a] = result_dict
+            all_aspect_count[a] = tmp_dict.values()
+        all_aspect_count.set_index('year-month', inplace=True)
 
         # ---------------------------------------- 畫折線圖 --------------------------------------- #
-        # fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()))
+        # fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()), markers=True)
         # # 更新圖片資料（加入 x,y label）
         # fig.update_layout(title=f'{aspect_option}_chart', template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
         # st.plotly_chart(fig)
 
         fig = go.Figure()
-        for k, v in all_aspect_count.items():
+        for col in all_aspect_count.columns.values.tolist():
             fig.add_trace(
-                go.line(x=list(v.keys()), y=list(v.values()))
+                go.line(x=all_aspect_count[col].index, y=all_aspect_count[col].values)
             )
         fig.update_layout(title=f'{aspect_option}_chart', template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
 
