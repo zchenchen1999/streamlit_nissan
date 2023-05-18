@@ -79,13 +79,13 @@ if start_date and end_date and aspect_option:
 
 
         # ---------------------------------------- 畫折線圖 --------------------------------------- #
-        fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()), markers=True)
+        # fig = px.line(x=list(result_dict.keys()), y=list(result_dict.values()), markers=True)
         # # 更新圖片資料（加入 x,y label）
+        
+        # fig = px.line(all_aspect_count, x=all_aspect_count['year_month'], y=all_aspect_count[''], color=all_aspect_count[])
+        fig = px.line(all_aspect_count, x=all_aspect_count.year_month, y=all_aspect_count.value, color=all_aspect_count.variable)
         fig.update_layout(title=f'{aspect_option}_chart', template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
         st.plotly_chart(fig)
-        # fig = px.line(all_aspect_count, x=all_aspect_count['year_month'], y=all_aspect_count[''], color=all_aspect_count[])
-        # fig = px.line(all_aspect_count, x=all_aspect_count.year_month, y=all_aspect_count.value, color=all_aspect_count.variable)
-
         # fig = go.Figure()
         # for col in all_aspect_count.columns.values.tolist():
         #     fig.add_trace(
