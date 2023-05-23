@@ -86,8 +86,8 @@ if start_date and end_date and aspect_option:
         # 要呈現給 user 的資料欄位
         df_select.reset_index(drop=True, inplace=True)
         df_display = df_select[['company_name', 'vacancies', 'post_time', 'sentences']]
-        expander = st.expander("查看 DATA")
-        st.expander.dataframe(data=df_display)
+        _expander = st.expander("查看 DATA")
+        _expander.dataframe(data=df_display)
 
     # if Bubble_info != '成交量':
     #     #如果選項不同，畫圖則不同
