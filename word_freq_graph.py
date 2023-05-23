@@ -8,7 +8,6 @@ import datetime
 
 #利用st.cache()快取沒有改變過的data
 # @st.cache()
-# 爬蟲程式
 def get_df(path=None):
     # 轉換日期
     date_format = '%Y.%m.%d'
@@ -21,7 +20,7 @@ def get_df(path=None):
         print("讀取資料失敗，請檢查路徑")
     return df
     #會返回一個DF
-df = get_df("data/dtm_result.csv")
+df = get_df("data/aspect/interview_sentence_dictword_dtm.csv")
 
 # --------------------------------- 設定基本資料 -------------------------------- #
 
@@ -56,7 +55,7 @@ if start_date and end_date and aspect_option:
     else:
         st.success(f'資料篩選成功，共有 {df_select.shape[0]} 筆面試資料!')
         # 要呈現給 user 的資料欄位
-        df_display = df_select[['vacancies', 'post_time', 'content']]
+        df_display = df_select[['vacancies', 'post_time', 'sentences']]
         st.dataframe(data=df_display)
 
         # ----------------------------------- 設定每個月出現次數字典 --------------------------------- #
@@ -73,7 +72,7 @@ if start_date and end_date and aspect_option:
                 tmp_dict[row['p_year_month']] = row[a]
             # add this aspect result to all list
             all_aspect_count[a] = tmp_dict.values()
-        # 轉換成 tidt data (long data)
+        # 轉換成 tidy data (long data)
         all_aspect_count = pd.melt(all_aspect_count, id_vars=all_aspect_count.columns[0], value_vars=all_aspect_count.columns[1:])
 
         # ---------------------------------------- 畫折線圖 --------------------------------------- #
