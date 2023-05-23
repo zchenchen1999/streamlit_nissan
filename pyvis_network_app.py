@@ -13,7 +13,7 @@ import random
 # =========================================================================================================================================#
 
 # 設定標題
-st.sidebar.title('面試趣-字詞網路圖')
+st.title('面試趣-字詞網路圖')
 # 選擇要畫 correlatoin 還是 co-occurance
 option = st.selectbox('選擇網路圖要呈現的關係',('None','correlatoin', 'co-occurance'), index=0)
 
