@@ -56,11 +56,6 @@ if start_date and end_date and aspect_option:
     if (df_select.shape[0] == 0):
         st.warning('時間區間內無資料 !')
     else:
-        st.success(f'資料篩選成功，共有 {df_select.shape[0]} 筆面試資料!')
-        # 要呈現給 user 的資料欄位
-        df_display = df_select[['company_name', 'vacancies', 'post_time', 'sentences']]
-        st.dataframe(data=df_display)
-
         # ----------------------------------- 設定每個月出現次數字典 --------------------------------- #
         # 生成日期範圍並轉換為所需的字符串格式
         date_range = pd.date_range(start="{}-{}".format(start_date.year, start_date.month), end="{}-{}".format(end_date.year+1 if end_date.month == 12 else end_date.year , 1 if end_date.month == 12 else end_date.month+1), freq='M').strftime('%Y-%m').tolist()
@@ -85,6 +80,13 @@ if start_date and end_date and aspect_option:
         line_chart_title = "[時間區間]："+start_date.strftime("%Y/%m/%d") + "~" + end_date.strftime("%Y/%m/%d")
         fig.update_layout(title=line_chart_title, template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
         st.plotly_chart(fig, use_container_width=True)
+
+        # 顯示 dataframe
+        st.success(f'資料篩選成功，共有 {df_select.shape[0]} 筆面試資料!')
+        # 要呈現給 user 的資料欄位
+        df_select.reset_index(drop=True, inplace=True)
+        df_display = df_select[['company_name', 'vacancies', 'post_time', 'sentences']]
+        st.dataframe(data=df_display)
 
     # if Bubble_info != '成交量':
     #     #如果選項不同，畫圖則不同
