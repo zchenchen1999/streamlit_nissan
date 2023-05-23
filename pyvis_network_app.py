@@ -12,6 +12,8 @@ import random
 # so a new network graph will be generated based on the new item set when there is a change in the selection (e.g., add or remove item).
 # =========================================================================================================================================#
 
+# 設定標題
+st.sidebar.title('面試趣-字詞網路圖')
 # 選擇要畫 correlatoin 還是 co-occurance
 option = st.selectbox('選擇網路圖要呈現的關係',('None','correlatoin', 'co-occurance'), index=0)
 
@@ -44,7 +46,7 @@ if option=='correlatoin' or option=='co-occurance':
                 return k
 
     # 設定標題
-    st.sidebar.title('面試趣 - 互動式字詞網路關係圖')
+    st.sidebar.title('參數設定')
 
     # 定義下拉式選單選項（使用字母排序）
     aspect_list = list(df_interact['class'].unique())
