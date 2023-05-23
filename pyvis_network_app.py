@@ -15,9 +15,9 @@ import random
 # 設定標題
 st.title('面試趣-字詞網路圖')
 # 選擇要畫 correlatoin 還是 co-occurance
-option = st.selectbox('選擇網路圖要呈現的關係',('None','correlatoin', 'co-occurance'), index=0)
+option = st.selectbox('選擇網路圖要呈現的關係',('None','correlatoin', 'co-occurrence'), index=0)
 
-if option=='correlatoin' or option=='co-occurance':
+if option=='correlatoin' or option=='co-occurrence':
     # 讀取資料 (CSV)
     if (option=='correlatoin'):
         df_interact = pd.read_csv('data/aspect/interview_dict_corre.csv')
