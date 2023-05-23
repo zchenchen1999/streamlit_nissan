@@ -107,14 +107,16 @@ if option=='correlatoin' or option=='co-occurance':
             if (i not in In_Graph.keys()): 
                 interview_net.add_node(n_id=nid, 
                                     label=i, 
-                                    color=aspect_color[get_class_by_subclass(i)])
+                                    color=aspect_color[get_class_by_subclass(i)],
+                                    title=get_class_by_subclass(i))
                 In_Graph[i] = nid
                 nid += 1
         for i in df_select['item2']:
             if (i not in In_Graph.keys()): 
                 interview_net.add_node(n_id=nid, 
                                     label=i, 
-                                    color=aspect_color[get_class_by_subclass(i)])
+                                    color=aspect_color[get_class_by_subclass(i)],
+                                    title=get_class_by_subclass(i))
                 In_Graph[i] = nid
                 nid += 1
         # 加入 edge
