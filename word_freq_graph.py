@@ -29,6 +29,8 @@ min_day = datetime.datetime.strptime('2022.10.12', '%Y.%m.%d').date()
 max_day = df['post_time'].max()
 # 構面清單
 aspect_list = ['成就感', '學習成長','創新', '薪資', '福利', '管理制度', '工作氛圍', '同事互動', '主管風格', '工作地點', '公司規模','工作環境', '產業前景', '輪調', '外派', '出差', '引擎', '馬力', '避震', '外觀', '操控', '安全','堅固', '配備', '價錢', '科技', '品質', '折舊', '品牌', '空間', '保養', '續航', '尺寸', '車種','驅動', '變速箱', '電資', '機械', '製造', '車輛工程', '品管', '多元性', '企業社會責任', '企業永續目標','面試', '徵才', '實習', '工作', '離職', '轉職', '新鮮人', '畢業', '出路', '能力', '招募人員','正向', '負向']
+# 公司清單
+company_list = list(df['company_name'].unique())
 
 # ---------------------------------- sidebar --------------------------------- #
 
@@ -37,7 +39,7 @@ st.sidebar.header('參數設定')
 start_date = st.sidebar.date_input(label='選擇起始日期', value=min_day, min_value=min_day, max_value=max_day)
 end_date = st.sidebar.date_input(label='選擇結束日期', value=start_date, min_value=start_date, max_value=max_day)
 # 單選列表
-# aspect_option = st.sidebar.selectbox('選擇構面',aspect_list)
+company_option = st.sidebar.selectbox('選擇公司', company_list)
 # 多選列表
 aspect_option = st.sidebar.multiselect('選擇構面', aspect_list)
 
@@ -50,12 +52,13 @@ st.title('面試趣-構面討論趨勢圖')
 if start_date and end_date and aspect_option:
     #如果stock_code與month都有值的話，則畫圖
     df_select = df[(df['post_time'] >= start_date) & (df['post_time'] <= end_date)]
+    df_select = df_select[df_select['company_name'] == company_option]
     if (df_select.shape[0] == 0):
         st.warning('時間區間內無資料 !')
     else:
         st.success(f'資料篩選成功，共有 {df_select.shape[0]} 筆面試資料!')
         # 要呈現給 user 的資料欄位
-        df_display = df_select[['vacancies', 'post_time', 'sentences']]
+        df_display = df_select[['company_name', 'vacancies', 'post_time', 'sentences']]
         st.dataframe(data=df_display)
 
         # ----------------------------------- 設定每個月出現次數字典 --------------------------------- #
