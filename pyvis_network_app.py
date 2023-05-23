@@ -73,7 +73,7 @@ if option=='correlatoin' or option=='co-occurance':
             # 實作 silder （選取關聯度）
             values = st.sidebar.slider(
                 '選擇共現次數區間',
-                0, int(df_interact['value'].max()), (100, 200))
+                0, 2000, (100, 200))
             st.sidebar.write('共現次數:', values)
         # 依照構面該選資料
         df_select = df_interact.loc[df_interact['class'].isin(selected_aspect)]
