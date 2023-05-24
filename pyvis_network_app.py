@@ -126,7 +126,7 @@ if option=='correlatoin' or option=='co-occurrence':
         # 加入 edge
         for i, row in df_select.iterrows():
             # print(row['item1'])
-            interview_net.add_edge(In_Graph[row['item1']], In_Graph[row['item2']], weight=row['value'], title=row['value'])
+            interview_net.add_edge(In_Graph[row['item1']], In_Graph[row['item2']], weight=row['value'], title=row['value'], value=row['value'])
 
         # 利用 try, expect 來配合 streamlit server 或 local 的路徑（因為 server 有 /tmp，但沒有與 loacl 一樣的路徑）
         # Save and read graph as HTML file (on Streamlit Sharing)
