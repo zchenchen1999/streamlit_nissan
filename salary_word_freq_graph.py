@@ -39,7 +39,7 @@ company_list.insert(0, "全部")
 st.sidebar.header('參數設定')
 # 日期選擇器
 start_date = st.sidebar.date_input(label='選擇起始日期', value=min_day, min_value=min_day, max_value=max_day)
-end_date = st.sidebar.date_input(label='選擇結束日期', value=start_date, min_value=start_date, max_value=max_day)
+end_date = st.sidebar.date_input(label='選擇結束日期', value=max_day, min_value=start_date, max_value=max_day)
 # 單選列表
 company_option = st.sidebar.selectbox('選擇公司', company_list)
 # 多選列表
@@ -84,13 +84,29 @@ if start_date and end_date and aspect_option:
         fig.update_layout(title=line_chart_title, template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
         st.plotly_chart(fig, use_container_width=True)
 
-        # 顯示 dataframe
-        st.success(f'資料篩選成功，共有 {df_select.shape[0]} 筆面試資料!')
-        # 要呈現給 user 的資料欄位
-        df_select.reset_index(drop=True, inplace=True)
-        df_display = df_select[['company_name', 'vacancies', 'post_time', 'sentences']]
-        _expander = st.expander("查看 DATA")
-        _expander.dataframe(data=df_display)
+        # # 篩選只包含選擇構面的資料
+        # for i in aspect_option:
+        #     df_select = df_select[df_select[i] > 0]
+
+        # 創建所有構面的 tab 顯示頁面
+        tab_list = st.tabs(aspect_option)
+
+        for i in range(len(tab_list)):
+            df_tmp = df_select[df_select[aspect_option[i]]> 0]
+            df_tmp.reset_index(drop=True, inplace=True)
+            df_tmp = df_tmp[['company_name', 'vacancies', 'post_time', 'sentences']]
+            tab_list[i].success(f'{aspect_option[i]}構面資料共有 {df_tmp.shape[0]} 筆面試資料!')
+            tab_list[i].dataframe(data=df_tmp)
+
+
+        # # 重置 index
+        # df_select.reset_index(drop=True, inplace=True)
+        # # 要呈現給 user 的資料欄位
+        # df_display = df_select[['company_name', 'vacancies', 'post_time', 'sentences']]
+        # # 顯示 dataframe
+        # st.success(f'資料篩選成功，同時包含{"、".join(aspect_option)}構面資料共有 {df_display.shape[0]} 筆面試資料!')
+        # _expander = st.expander("查看 DATA")
+        # _expander.dataframe(data=df_display)
 
     # if Bubble_info != '成交量':
     #     #如果選項不同，畫圖則不同
