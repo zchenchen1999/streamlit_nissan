@@ -104,7 +104,7 @@ if option=='correlatoin' or option=='co-occurrence':
         #                    damping=0.95)
         In_Graph = {}
         # color = [aspect_color[get_class_by_subclass(i)] for i in df_select['item1']]
-        interview_net = Network(height='700px',width="100%")
+        interview_net = Network(height='100%',width="100%")
         nid=1
         # 加入 node
         for i in df_select['item1']:
@@ -142,4 +142,4 @@ if option=='correlatoin' or option=='co-occurrence':
             HtmlFile = open(f'{path}/pyvis_graph.html', 'r', encoding='utf-8')
 
         # Load HTML file in HTML component for display on Streamlit page
-        components.html(HtmlFile.read(), height=700, scrolling=True)
+        components.html(HtmlFile.read(), height=600, scrolling=True)
