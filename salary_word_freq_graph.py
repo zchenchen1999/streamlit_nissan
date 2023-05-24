@@ -103,7 +103,7 @@ if start_date and end_date and aspect_option:
             df_tmp.reset_index(drop=True, inplace=True)
             df_tmp = df_tmp[['company_name', 'vacancies', 'post_time', 'sentences']]
             tab_list[i].success(f'{tab_name_list[i]}{"" if tab_name_list[i] == "共現構面" else "構面"}資料共有 {df_tmp.shape[0]} 筆面試資料!')
-            tab_list[i].dataframe(data=df_tmp)
+            tab_list[i].dataframe(data=df_tmp, use_container_width=True)
 
 
         # # 重置 index
