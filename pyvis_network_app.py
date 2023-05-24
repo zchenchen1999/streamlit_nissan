@@ -28,16 +28,20 @@ if option=='correlatoin' or option=='co-occurrence':
     aspect_dict = json.load(tf)
 
     # 設定構面顏色
+    # 隨機挑選顏色
     def generate_color():
         random_number = random.randint(0,16777215)
         hex_number = str(hex(random_number))
         hex_number ='#'+ hex_number[2:]
         return hex_number
+    # 固定顏色色碼
+    color_tag = ['#7C3E66', '#6096B4', '#B9EDDD', '#F2EBE9', '#93BFCF', '#87CBB9', '#A5BECC', '#BDCDD6', '#569DAA', '#243A73', '#577D86']
     aspect_color = {}
-    # aspect_group = {}
+    color_idx = 0
     for k, v in aspect_dict.items():
-        aspect_color[k] = generate_color()
-        # aspect_group[k] = aspect_dict.keys().index(k)
+        # aspect_color[k] = generate_color()
+        aspect_color[k] = color_tag[color_idx]
+        color_idx += 1
 
     # 依照 value 找 key
     def get_class_by_subclass(sub_class):
