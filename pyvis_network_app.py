@@ -104,7 +104,7 @@ if option=='correlatoin' or option=='co-occurrence':
         #                    damping=0.95)
         In_Graph = {}
         # color = [aspect_color[get_class_by_subclass(i)] for i in df_select['item1']]
-        interview_net = Network(height='700px')
+        interview_net = Network(height='700px',width="100%")
         nid=1
         # 加入 node
         for i in df_select['item1']:
