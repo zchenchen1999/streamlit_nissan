@@ -35,7 +35,7 @@ if option=='correlatoin' or option=='co-occurrence':
         hex_number ='#'+ hex_number[2:]
         return hex_number
     # 固定顏色色碼
-    color_tag = ['#7C3E66', '#6096B4', '#B9EDDD', '#F2EBE9', '#93BFCF', '#87CBB9', '#A5BECC', '#BDCDD6', '#569DAA', '#243A73', '#577D86']
+    color_tag = ['#E74646', '#F79327', '#FFD966', '#8BDB81', '#93BFCF', '#1D267D', '#AB46D2', '#20262E', '#B7B7B7', '#FFF2CC', '#B99B6B']
     aspect_color = {}
     color_idx = 0
     for k, v in aspect_dict.items():
@@ -142,4 +142,4 @@ if option=='correlatoin' or option=='co-occurrence':
             HtmlFile = open(f'{path}/pyvis_graph.html', 'r', encoding='utf-8')
 
         # Load HTML file in HTML component for display on Streamlit page
-        components.html(HtmlFile.read(), height=700, width=800, scrolling=True)
+        components.html(HtmlFile.read(), height=700, scrolling=True)
