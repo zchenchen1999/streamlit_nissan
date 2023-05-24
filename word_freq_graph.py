@@ -89,13 +89,20 @@ if start_date and end_date and aspect_option:
 
 
         # 創建所有構面的 tab 顯示頁面
-        tab_list = st.tabs(aspect_option)
+        tab_name_list = aspect_option.copy()
+        tab_name_list.append("共現構面")
+        tab_list = st.tabs(tab_name_list)
 
         for i in range(len(tab_list)):
-            df_tmp = df_select[df_select[aspect_option[i]]> 0]
+            if (tab_name_list[i] == "共現構面"):
+                df_tmp = df_select
+                for a in aspect_option:
+                    df_tmp = df_tmp[df_tmp[a] > 0]
+            else:
+                df_tmp = df_select[df_select[aspect_option[i]]> 0]
             df_tmp.reset_index(drop=True, inplace=True)
             df_tmp = df_tmp[['company_name', 'vacancies', 'post_time', 'sentences']]
-            tab_list[i].success(f'{aspect_option[i]}構面資料共有 {df_tmp.shape[0]} 筆面試資料!')
+            tab_list[i].success(f'{tab_name_list[i]}{"" if tab_name_list[i] == "共現構面" else "構面"}資料共有 {df_tmp.shape[0]} 筆面試資料!')
             tab_list[i].dataframe(data=df_tmp)
         # # 重置 index
         # df_select.reset_index(drop=True, inplace=True)
