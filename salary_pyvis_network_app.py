@@ -12,6 +12,9 @@ import random
 # so a new network graph will be generated based on the new item set when there is a change in the selection (e.g., add or remove item).
 # =========================================================================================================================================#
 
+# 預設顯示 wide mode
+st.set_page_config(layout="wide")
+
 # 設定標題
 st.title('比薪水-字詞網路圖')
 # 選擇要畫 correlatoin 還是 co-occurance

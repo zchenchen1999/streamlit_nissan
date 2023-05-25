@@ -6,6 +6,8 @@ import plotly.express as px
 import pandas as pd
 import datetime
 
+# 預設顯示 wide mode
+st.set_page_config(layout="wide")
 #利用st.cache()快取沒有改變過的data
 # @st.cache()
 def get_df(path=None):
