@@ -5,6 +5,7 @@ from plotly.subplots import make_subplots
 import plotly.express as px
 import pandas as pd
 import datetime
+import json
 
 # 預設顯示 wide mode
 st.set_page_config(layout="wide")
@@ -36,6 +37,15 @@ aspect_list = ['成就感', '學習成長','創新', '薪資', '福利', '管理
 company_list = list(df['company_name'].unique())
 company_list.insert(0, "全部")
 
+# 構面字典
+tf = open("./data/aspect.json", "r")
+aspect_dict = json.load(tf)
+# 依照 value 找 key
+def get_class_by_subclass(sub_class):
+    for k, v in aspect_dict.items():
+        if (sub_class in v):
+            return k
+
 # ---------------------------------- sidebar --------------------------------- #
 
 st.sidebar.header('參數設定')
@@ -44,8 +54,14 @@ start_date = st.sidebar.date_input(label='選擇起始日期', value=min_day, mi
 end_date = st.sidebar.date_input(label='選擇結束日期', value=max_day, min_value=start_date, max_value=max_day)
 # 單選列表
 company_option = st.sidebar.selectbox('選擇公司', company_list)
+
+# # 構面選擇器 label 呈現 format
+def label_foramt(option):
+    # a = st.markdown(f"**{label}**")
+    # label = ":blue[label]"
+    return f'[{get_class_by_subclass(option)}] - {option}'
 # 多選列表
-aspect_option = st.sidebar.multiselect('選擇構面', aspect_list)
+aspect_option = st.sidebar.multiselect('選擇構面', aspect_list, format_func=label_foramt)
 
 # ----------------------------------- body ----------------------------------- #
 # st.image('./icon.png')
