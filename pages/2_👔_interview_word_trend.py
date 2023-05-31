@@ -23,15 +23,15 @@ def get_df(path=None):
         print("讀取資料失敗，請檢查路徑")
     return df
     #會返回一個DF
-df = get_df("data/aspect/interview_sentence_dictword_dtm.csv")
+df = get_df("data/dtm_corre_cooc/interview/interview_word_dict_dtm_TWM.csv")
 
 # --------------------------------- 設定基本資料 -------------------------------- #
 
 # 資料內最早、最晚出現時間
 min_day = datetime.datetime.strptime('2022.10.12', '%Y.%m.%d').date()
 max_day = df['post_time'].max()
-# 構面清單
-aspect_list = ['成就感', '學習成長','創新', '薪資', '福利', '管理制度', '工作氛圍', '同事互動', '主管風格', '工作地點', '公司規模','工作環境', '產業前景', '輪調', '外派', '出差', '引擎', '馬力', '避震', '外觀', '操控', '安全','堅固', '配備', '價錢', '科技', '品質', '折舊', '品牌', '空間', '保養', '續航', '尺寸', '車種','驅動', '變速箱', '電資', '機械', '製造', '車輛工程', '品管', '多元性', '企業社會責任', '企業永續目標','面試', '徵才', '實習', '工作', '離職', '轉職', '新鮮人', '畢業', '出路', '能力', '招募人員','正向', '負向']
+
+
 # 公司清單
 company_list = list(df['company_name'].unique())
 company_list.insert(0, "全部")
@@ -44,6 +44,13 @@ def get_class_by_subclass(sub_class):
     for k, v in aspect_dict.items():
         if (sub_class in v):
             return k
+
+# 構面清單
+# aspect_list = ['成就感', '學習成長', '創新', '薪資', '福利', '管理制度', '工作氛圍', '同事互動', '主管風格', '工作地點', '公司規模', '工作環境', '產業前景', '多元性', '企業社會責任', '企業永續目標', '變化性', '工學院', '面試', '徵才', '實習', '工作', '離職', '轉職', '新鮮人', '畢業', '出路', '能力', '招募人員', '正向', '負向']
+aspect_list = []
+for k, v in aspect_dict.items():
+    for i in v:
+        aspect_list.append(i)
 
 # ---------------------------------- sidebar --------------------------------- #
 
@@ -119,13 +126,13 @@ if start_date and end_date and aspect_option:
             else:
                 df_tmp = df_select[df_select[aspect_option[i]]> 0]
             df_tmp.reset_index(drop=True, inplace=True)
-            df_tmp = df_tmp[['company_name', 'vacancies', 'post_time', 'sentences']]
+            df_tmp = df_tmp[['company_name', 'vacancies', 'post_time', 'sentence']]
             tab_list[i].success(f'{tab_name_list[i]}{"" if tab_name_list[i] == "共現構面" else "構面"}資料共有 {df_tmp.shape[0]} 筆面試資料!')
             tab_list[i].dataframe(data=df_tmp, use_container_width=True)
         # # 重置 index
         # df_select.reset_index(drop=True, inplace=True)
         # # 要呈現給 user 的資料欄位
-        # df_display = df_select[['company_name', 'vacancies', 'post_time', 'sentences']]
+        # df_display = df_select[['company_name', 'vacancies', 'post_time', 'sentence']]
         # # 顯示 dataframe
         # st.success(f'資料篩選成功，共有 {df_display.shape[0]} 筆面試資料!')
         # _expander = st.expander("查看 DATA")

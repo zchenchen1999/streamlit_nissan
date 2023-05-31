@@ -22,6 +22,13 @@ st.title('比薪水-字詞網路圖')
 
 # 設定 side bar 標題
 st.sidebar.title('參數設定')
+
+# 設定公司
+company_df = pd.read_csv('data/dtm_corre_cooc/salary/salary_word_dict_dtm_TWM.csv')
+company_list = list(company_df['company_name'].unique())
+company_list.insert(0, "全部")
+company_option = st.sidebar.selectbox('選擇公司', company_list)
+
 # 選擇要畫 correlatoin 還是 co-occurance
 option = st.sidebar.selectbox('選擇網路圖要呈現的關係',('correlatoin', 'co-occurrence'), index=0)
 
@@ -39,11 +46,19 @@ else:
         0, 2000, (100, 500))
     st.sidebar.write('共現次數:', values)
 
+
 # 讀取資料 (CSV)
-if (option=='correlatoin'):
-    df_interact = pd.read_csv('data/salary/salary_dict_corre.csv')
+if (company_option == "全部"):
+    if (option=='correlatoin'):
+        df_interact = pd.read_csv('data/pyvis_data/salary/correlation/all_correlation.csv')
+    else:
+        df_interact = pd.read_csv('data/pyvis_data/salary/coocurrence/all_coocurrence.csv')
 else:
-    df_interact = pd.read_csv('data/salary/salary_dict_CoOcurr.csv')
+    if (option=='correlatoin'):
+        df_interact = pd.read_csv(f'data/pyvis_data/salary/correlation/{company_option}_correlation.csv')
+    else:
+        df_interact = pd.read_csv(f'data/pyvis_data/salary/coocurrence/{company_option}_coocurrence.csv')
+
 
 
 tf = open("./data/aspect.json", "r")
@@ -159,7 +174,7 @@ else:
         interview_net.save_graph(f'{path}/pyvis_graph.html')
         HtmlFile = open(f'{path}/pyvis_graph.html', 'r', encoding='utf-8')
 
-    col1, col2= st.columns([9, 1])
+    col1, col2= st.columns([8, 1])
     with col1:
         components.html(HtmlFile.read(), height=660, scrolling=True)
 
