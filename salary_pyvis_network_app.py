@@ -122,7 +122,7 @@ else:
     #                    damping=0.95)
     In_Graph = {}
     # color = [aspect_color[get_class_by_subclass(i)] for i in df_select['item1']]
-    interview_net = Network(height='550px',width="100%")
+    interview_net = Network(height='650px',width="100%")
     nid=1
     # 加入 node
     for i in df_select['item1']:
