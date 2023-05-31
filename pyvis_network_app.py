@@ -6,6 +6,7 @@ import networkx as nx
 from pyvis.network import Network
 import json
 import random
+from annotated_text import annotated_text
 
 # =========================================================================================================================================#
 # Streamlit runs from top to bottom, 
@@ -59,11 +60,18 @@ def generate_color():
 # 固定顏色色碼
 color_tag = ['#E74646', '#F79327', '#FFD966', '#8BDB81', '#93BFCF', '#1D267D', '#AB46D2', '#20262E', '#B7B7B7', '#FFF2CC', '#B99B6B']
 aspect_color = {}
+aspect_color_tuple_list = []
 color_idx = 0
 for k, v in aspect_dict.items():
     # aspect_color[k] = generate_color()
     aspect_color[k] = color_tag[color_idx]
     color_idx += 1
+for k, v in aspect_color.items():
+    tmp_tuple = ("", "", v)
+    tmp_list = []
+    tmp_list.append(tmp_tuple)
+    tmp_list.append(k)
+    aspect_color_tuple_list.append(tmp_list)
 
 # 依照 value 找 key
 def get_class_by_subclass(sub_class):
@@ -112,7 +120,7 @@ else:
     #                    damping=0.95)
     In_Graph = {}
     # color = [aspect_color[get_class_by_subclass(i)] for i in df_select['item1']]
-    interview_net = Network(height='550px',width="100%")
+    interview_net = Network(height='650px',width="100%")
     nid=1
     # 加入 node
     for i in df_select['item1']:
@@ -149,5 +157,16 @@ else:
         interview_net.save_graph(f'{path}/pyvis_graph.html')
         HtmlFile = open(f'{path}/pyvis_graph.html', 'r', encoding='utf-8')
 
+    col1, col2= st.columns([9, 1])
+    with col1:
+        components.html(HtmlFile.read(), height=660, scrolling=True)
+
+    with col2:
+        for i in aspect_color_tuple_list:
+            annotated_text(i)
+    
+    # col1, col2 = st.columns([3, 1])
+    # 圖例
+    # col2.annotated_text(aspect_color_tuple_list)
     # Load HTML file in HTML component for display on Streamlit page
-    components.html(HtmlFile.read(), height=600, scrolling=True)
+    # col1.components.html(HtmlFile.read(), height=600, scrolling=True)
