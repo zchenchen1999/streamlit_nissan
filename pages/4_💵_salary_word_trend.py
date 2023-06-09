@@ -18,6 +18,7 @@ def get_df(path=None):
         df = pd.read_csv(path)
         df.drop(['Unnamed: 0'], axis=1,inplace=True)
         date_format = '%Y.%m.%d'
+        # 將發文日期轉為 date
         df['post_time'] = df['post_time'].apply(lambda x: datetime.datetime.strptime(x, date_format).date())
         # 篩選掉不要的職位
         df = df[~df['vacancies'].str.contains('客服|專員')]
