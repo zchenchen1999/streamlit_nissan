@@ -19,6 +19,8 @@ def get_df(path=None):
         df.drop(['Unnamed: 0'], axis=1,inplace=True)
         date_format = '%Y.%m.%d'
         df['post_time'] = df['post_time'].apply(lambda x: datetime.datetime.strptime(x, date_format).date())
+        # 篩選掉不要的職位
+        df = df[~df['vacancies'].str.contains('客服|專員')]
     except:
         print("讀取資料失敗，請檢查路徑")
     return df
