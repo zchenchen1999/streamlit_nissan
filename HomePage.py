@@ -29,8 +29,8 @@ for i in range(2):
     tab_list[i].write("汽車產業公司解鎖文章數")
     tab_list[i].dataframe(data=df_list[i][1], use_container_width=True, height=600)
     
-    fig = px.pie(df_list[i][1], values='未解鎖', names='公司', title='未解鎖汽車產業公司佔比')
-    tab_list[i].plotly_chart(fig, use_container_width=True)
+    # fig = px.pie(df_list[i][1], values='未解鎖', names='公司', title='未解鎖汽車產業公司佔比')
+    # tab_list[i].plotly_chart(fig, use_container_width=True)
     fig = px.pie(df_list[i][1], values='已解鎖', names='公司', title='已解鎖汽車產業公司佔比')
     tab_list[i].plotly_chart(fig, use_container_width=True)
 
