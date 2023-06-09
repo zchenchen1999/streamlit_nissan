@@ -101,14 +101,14 @@ st.title('比薪水-構面討論趨勢圖')
 
 # ----------------------------------- plotly --------------------------------- #
 
-if start_date and end_date and aspect_option:
+if start_date and end_date and aspect_option and company_option:
     #如果stock_code與month都有值的話，則畫圖
     df_select = df[(df['post_time'] >= start_date) & (df['post_time'] <= end_date)]
     df_select = df_select.loc[df_select['company_name'].isin(company_option)]
     # if (company_option != "全部" and company_option != None):
     #     df_select = df_select[df_select['company_name'] == company_option]
     if (df_select.shape[0] == 0):
-        st.warning('時間區間內無資料 !')
+        st.warning('時間區間內無資料 ! 檢查是否有選擇公司及構面，或是調整時間範圍')
     else:
         # 創建所有構面的 tab 顯示頁面
         aspect_option.append("共現構面")
@@ -140,6 +140,8 @@ if start_date and end_date and aspect_option:
             tab_list_trend[i].success(f'{tab_name_list[i]}{"" if tab_name_list[i] == "共現構面" else "構面"}資料共有 {df_tmp.shape[0]} 筆面試資料!')
             # 在此頁籤中呈現 dataframe
             tab_list_trend[i].dataframe(data=df_tmp, use_container_width=True)
+else:
+    st.warning('請選擇日期、公司、構面!')
     # else:
     #     # ----------------------------------- 設定每個月出現次數字典 --------------------------------- #
     #     # 生成日期範圍並轉換為所需的字符串格式
