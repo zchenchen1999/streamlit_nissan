@@ -10,6 +10,7 @@ st.set_page_config(page_title="裕日僱主品牌輿情系統", layout="wide")
 
 # title
 st.title("裕日僱主品牌輿情系統")
+st.caption("已過濾掉「客服」、「專員」相關職位")
 
 # 取資料
 df_list = [[] for i in range(2)]
