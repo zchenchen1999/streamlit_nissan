@@ -10,6 +10,19 @@ st.set_page_config(page_title="裕日僱主品牌輿情系統", layout="wide")
 
 # title
 st.title("裕日僱主品牌輿情系統")
+
+st.divider()
+
+st.subheader("公司概況統計")
+df_company = pd.read_csv('./data/company_info.csv').drop(columns='Unnamed: 0')
+df_company.rename(columns = {'company_name':'公司名稱', 'industry':'產業別', 'location':'地區', 'grade':'面試評價', 'degree':'面試難度', 'mood':'上班心情', 'frequence':'加班頻率', 'salary_month':'平均月薪', 'interview_num':'面試心得數', 'salary_num':'薪水情報數', 'account':'資本額'}, inplace = True)
+st.caption("「面試評價、面試難度、上班心情、加班頻率、平均月薪、面試心得數、薪水情報數」為面試趣與比薪水爬取資訊")
+st.dataframe(df_company)
+
+
+st.divider()
+
+st.subheader("面試趣 / 比薪水解鎖文章統計")
 st.caption("已過濾掉「客服」、「專員」相關職位")
 
 # 取資料

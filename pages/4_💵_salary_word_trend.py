@@ -81,6 +81,37 @@ def get_companys_counts_by_aspect(companys, df, start_date, end_date):
 
     return all_company_count
 
+
+def get_aspects_counts_by_company(aspects, df, start_date, end_date):
+    # 生成日期範圍並轉換為所需的字符串格式
+    # ----------------------------------- 設定每個月出現次數字典 --------------------------------- #
+    date_range = pd.date_range(start="{}-{}".format(start_date.year, start_date.month), end="{}-{}".format(end_date.year+1 if end_date.month == 12 else end_date.year , 1 if end_date.month == 12 else end_date.month+1), freq='M').strftime('%Y-%m').tolist()
+    all_aspect_count = pd.DataFrame(date_range, columns=['year_month'])
+    # 每間公司
+    for a in aspects:
+        if (a == "共現構面"):
+            continue
+        # 篩選出構面資料
+        if (a == "正向"):
+            aspect_df = df[df['sentiment_value'] > 0]
+        elif (a == '負向'):
+            aspect_df = df[df['sentiment_value'] < 0]
+        else:
+            aspect_df = df[df[a] > 0]
+        # 創建字典，將每個日期設置為0
+        tmp_dict = {date: 0 for date in date_range}
+        # 以年月來 group，將那個月的構面出現的文章數相加
+        grouped = pd.DataFrame(aspect_df.groupby(aspect_df['p_year_month']).count()).reset_index()
+        # 將每個月構面出現次數加入 dict
+        for index, row in grouped.iterrows():
+            tmp_dict[row['p_year_month']] = row["company_name"]
+        # 將這個公司計算結過加入此構面結果
+        all_aspect_count[a] = tmp_dict.values()
+    # 轉換成 tidy data (long data)
+    all_aspect_count = pd.melt(all_aspect_count, id_vars=all_aspect_count.columns[0], value_vars=all_aspect_count.columns[1:])
+
+    return all_aspect_count
+
 # ---------------------------------- sidebar --------------------------------- #
 
 st.sidebar.header('參數設定')
@@ -113,17 +144,27 @@ if start_date and end_date and aspect_option and company_option:
     else:
         # 創建所有構面的 tab 顯示頁面
         aspect_option.append("共現構面")
-        tab_name_list = aspect_option.copy()
-        # tab_name_list.append("共現構面")
-        tab_list_trend = st.tabs(tab_name_list)
-        for i in range(len(tab_list_trend)):
+        aspect_tab_list = aspect_option.copy()
+        # aspect_tab_list.append("共現構面")
+        aspect_trend = st.tabs(aspect_tab_list)
+        for i in range(len(aspect_trend)):
             # 篩選構面
-            if (tab_name_list[i] == "共現構面"):
+            if (aspect_tab_list[i] == "共現構面"):
                 # 共現構面利用所有選擇構面去篩選 data
                 df_tmp = df_select
                 for a in aspect_option:
                     if (a != "共現構面"):
-                        df_tmp = df_tmp[df_tmp[a] > 0]
+                        if (a == "正向"):
+                            df_tmp = df_tmp[df_tmp['sentiment_value'] > 0]
+                        elif (a == "負向"):
+                            df_tmp = df_tmp[df_tmp['sentiment_value'] < 0]
+                        else:
+                            df_tmp = df_tmp[df_tmp[a] > 0]
+            elif (aspect_tab_list[i] == "正向" or aspect_tab_list[i] == "負向"):
+                if (aspect_tab_list[i] == "正向"):
+                    df_tmp = df_select[df_select['sentiment_value']> 0]
+                else:
+                    df_tmp = df_select[df_select['sentiment_value']< 0]
             else:
                 df_tmp = df_select[df_select[aspect_option[i]]> 0]
             # ---------------------------------------- 呈現趨勢圖 --------------------------------------- #
@@ -133,114 +174,32 @@ if start_date and end_date and aspect_option and company_option:
             line_chart_title = "[時間區間]："+start_date.strftime("%Y/%m/%d") + "~" + end_date.strftime("%Y/%m/%d")
             fig.update_layout(title=line_chart_title, template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
             # 在此頁籤中畫圖
-            tab_list_trend[i].plotly_chart(fig, use_container_width=True)
+            aspect_trend[i].plotly_chart(fig, use_container_width=True)
 
             # ---------------------------------------- 呈現 dataframe --------------------------------------- #
             df_tmp.reset_index(drop=True, inplace=True)
             df_tmp = df_tmp[['company_name', 'vacancies', 'post_time', 'sentence', 'sentiment_value']]
-            tab_list_trend[i].success(f'{tab_name_list[i]}{"" if tab_name_list[i] == "共現構面" else "構面"}資料共有 {df_tmp.shape[0]} 筆面試資料!')
+            aspect_trend[i].success(f'{aspect_tab_list[i]}{"" if aspect_tab_list[i] == "共現構面" else "構面"}資料共有 {df_tmp.shape[0]} 筆面試資料!')
             # 在此頁籤中呈現 dataframe
-            tab_list_trend[i].dataframe(data=df_tmp, use_container_width=True)
+            aspect_trend[i].dataframe(data=df_tmp, use_container_width=True)
+        
+        st.divider()
+        # ------------------------------------------- 公司為主 tabs -------------------------------------- #
+        st.subheader("公司比較每個構面趨勢")
+        company_tab_list = company_option.copy()
+        company_trend = st.tabs(company_tab_list)
+        for i in range(len(company_trend)):
+            df_tmp = df_select[df_select['company_name'] == company_option[i]]
+            tidy_data = get_aspects_counts_by_company(aspect_option, df_tmp, start_date, end_date)
+            fig = px.line(tidy_data, x=tidy_data.year_month, y=tidy_data.value, color=tidy_data.variable, markers=True)
+            line_chart_title = "[時間區間]："+start_date.strftime("%Y/%m/%d") + "~" + end_date.strftime("%Y/%m/%d")
+            fig.update_layout(title=line_chart_title, template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
+            # 在此頁籤中畫圖
+            company_trend[i].plotly_chart(fig, use_container_width=True)
+            # 顯示 dataframe
+            df_tmp = df_tmp[['company_name', 'vacancies', 'post_time', 'sentence', 'sentiment_value']]
+            company_trend[i].success(f'{company_tab_list[i]}共有{df_tmp.shape[0]} 筆面試資料!')
+            company_trend[i].dataframe(df_tmp)
+
 else:
     st.warning('請選擇日期、公司、構面!')
-    # else:
-    #     # ----------------------------------- 設定每個月出現次數字典 --------------------------------- #
-    #     # 生成日期範圍並轉換為所需的字符串格式
-    #     date_range = pd.date_range(start="{}-{}".format(start_date.year, start_date.month), end="{}-{}".format(end_date.year+1 if end_date.month == 12 else end_date.year , 1 if end_date.month == 12 else end_date.month+1), freq='M').strftime('%Y-%m').tolist()
-    #     all_aspect_count = pd.DataFrame(date_range, columns=['year_month'])
-
-    #     for a in aspect_option:
-    #         # 創建字典，將每個日期設置為0
-    #         tmp_dict = {date: 0 for date in date_range}
-    #         grouped = pd.DataFrame(df_select.groupby(df_select['p_year_month'])[a].sum()).reset_index()
-    #         # 將每個月構面出現次數加入 dict
-    #         for index, row in grouped.iterrows():
-    #             tmp_dict[row['p_year_month']] = row[a]
-    #         # add this aspect result to all list
-    #         all_aspect_count[a] = tmp_dict.values()
-    #     # 轉換成 tidy data (long data)
-    #     all_aspect_count = pd.melt(all_aspect_count, id_vars=all_aspect_count.columns[0], value_vars=all_aspect_count.columns[1:])
-
-    #     # ---------------------------------------- 畫折線圖 --------------------------------------- #
-
-    #     # 直接利用 dataframe 的 long format (Tidy data) 來畫圖， X=> 時間, Y=> 數量, color=> 不同構面
-    #     fig = px.line(all_aspect_count, x=all_aspect_count.year_month, y=all_aspect_count.value, color=all_aspect_count.variable, markers=True)
-    #     line_chart_title = "[時間區間]："+start_date.strftime("%Y/%m/%d") + "~" + end_date.strftime("%Y/%m/%d")
-    #     fig.update_layout(title=line_chart_title, template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
-    #     st.plotly_chart(fig, use_container_width=True)
-
-    #     # # 篩選只包含選擇構面的資料
-    #     # for i in aspect_option:
-    #     #     df_select = df_select[df_select[i] > 0]
-
-    #     # 創建所有構面的 tab 顯示頁面
-    #     tab_name_list = aspect_option.copy()
-    #     tab_name_list.append("共現構面")
-    #     tab_list = st.tabs(tab_name_list)
-
-    #     for i in range(len(tab_list)):
-    #         if (tab_name_list[i] == "共現構面"):
-    #             df_tmp = df_select
-    #             for a in aspect_option:
-    #                 df_tmp = df_tmp[df_tmp[a] > 0]
-    #         else:
-    #             df_tmp = df_select[df_select[aspect_option[i]]> 0]
-    #         df_tmp.reset_index(drop=True, inplace=True)
-    #         df_tmp = df_tmp[['company_name', 'vacancies', 'post_time', 'sentence']]
-    #         tab_list[i].success(f'{tab_name_list[i]}{"" if tab_name_list[i] == "共現構面" else "構面"}資料共有 {df_tmp.shape[0]} 筆面試資料!')
-    #         tab_list[i].dataframe(data=df_tmp, use_container_width=True)
-
-
-        # # 重置 index
-        # df_select.reset_index(drop=True, inplace=True)
-        # # 要呈現給 user 的資料欄位
-        # df_display = df_select[['company_name', 'vacancies', 'post_time', 'sentence']]
-        # # 顯示 dataframe
-        # st.success(f'資料篩選成功，同時包含{"、".join(aspect_option)}構面資料共有 {df_display.shape[0]} 筆面試資料!')
-        # _expander = st.expander("查看 DATA")
-        # _expander.dataframe(data=df_display)
-
-    # if Bubble_info != '成交量':
-    #     #如果選項不同，畫圖則不同
-    #     trace1 = go.Scatter(
-    #         x=data['日期'],
-    #         y=data['收盤價'],
-    #         mode='lines+markers',
-    #         marker=dict(size=data[f'{Bubble_info}'].abs(),
-    #                     sizeref=data[f'{Bubble_info}'].abs().mean() /
-    #                     Bubble_size,
-    #                     color=data[f'{Bubble_info}買賣顏色']),
-    #         line =dict(dash= 'dot'),
-    #         hovertemplate="<b>日期%{x}</b><br> 收盤價 %{y} " + f"{Bubble_info} :" +
-    #         "%{marker.size}<br>",
-    #         name='收盤價')
-    # else:
-    #     trace1 = go.Scatter(x=data['日期'],
-    #                         y=data['收盤價'],
-    #                         mode='lines+markers',
-    #                         marker=dict(
-    #                             size=data[f'{Bubble_info}'].abs(),
-    #                             sizeref=data[f'{Bubble_info}'].abs().mean() /
-    #                             Bubble_size,
-    #                         ),
-    #                         line =dict(dash= 'dot'),
-    #                          hovertemplate="<b>日期%{x}</b><br> 收盤價 %{y}",
-    #                         name='收盤價')
-
-
-    # trace2 = go.Bar(x=data['日期'],
-    #                 y=data[f'{sub_info}'],
-    #                 name=f'{sub_info}',
-    #                 marker_color=data[f'{sub_info}買賣顏色'])
-
-    
-    # fig = make_subplots(rows=2,
-    #                     cols=1,
-    #                     shared_xaxes=True,
-    #                     row_heights=[0.7, 0.3])
-    # fig.add_trace(trace1, row=1, col=1)
-    # fig.add_trace(trace2, row=2, col=1)
-
-
-    #st.繪圖呈現
-# view rawapp.py hosted with ❤ by GitHub
