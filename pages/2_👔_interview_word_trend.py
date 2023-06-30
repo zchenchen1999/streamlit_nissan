@@ -204,7 +204,7 @@ if start_date and end_date and aspect_option and company_option:
             # 顯示 dataframe
             df_tmp = df_tmp[['company_name', 'vacancies', 'post_time', 'sentence', 'sentiment_value']]
             company_trend[i].success(f'{company_tab_list[i]}共有{df_tmp.shape[0]} 筆面試資料!')
-            company_trend[i].dataframe(df_tmp)
+            company_trend[i].dataframe(df_tmp, use_container_width=True)
 
 else:
     st.warning('請選擇日期、公司、構面!')
