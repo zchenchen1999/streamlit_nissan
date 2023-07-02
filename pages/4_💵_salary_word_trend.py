@@ -142,6 +142,7 @@ if start_date and end_date and aspect_option and company_option:
     if (df_select.shape[0] == 0):
         st.warning('時間區間內無資料 ! 檢查是否有選擇公司及構面，或是調整時間範圍')
     else:
+        st.subheader("構面比較每間公司趨勢")
         # 創建所有構面的 tab 顯示頁面
         aspect_option.append("共現構面")
         aspect_tab_list = aspect_option.copy()
