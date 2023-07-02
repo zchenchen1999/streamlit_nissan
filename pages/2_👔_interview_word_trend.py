@@ -87,7 +87,7 @@ def get_aspects_counts_by_company(aspects, df, start_date, end_date):
     # ----------------------------------- 設定每個月出現次數字典 --------------------------------- #
     date_range = pd.date_range(start="{}-{}".format(start_date.year, start_date.month), end="{}-{}".format(end_date.year+1 if end_date.month == 12 else end_date.year , 1 if end_date.month == 12 else end_date.month+1), freq='M').strftime('%Y-%m').tolist()
     all_aspect_count = pd.DataFrame(date_range, columns=['year_month'])
-    # 每間公司
+    # 每個構面
     for a in aspects:
         if (a == "共現構面"):
             continue
@@ -158,17 +158,17 @@ if start_date and end_date and aspect_option and company_option:
                 df_tmp = df_select
                 for a in aspect_option:
                     if (a != "共現構面"):
-                        if (a == "正向"):
-                            df_tmp = df_tmp[df_tmp['sentiment_value'] > 0]
-                        elif (a == "負向"):
-                            df_tmp = df_tmp[df_tmp['sentiment_value'] < 0]
-                        else:
-                            df_tmp = df_tmp[df_tmp[a] > 0]
-            elif (aspect_tab_list[i] == "正向" or aspect_tab_list[i] == "負向"):
-                if (aspect_tab_list[i] == "正向"):
-                    df_tmp = df_select[df_select['sentiment_value']> 0]
-                else:
-                    df_tmp = df_select[df_select['sentiment_value']< 0]
+                        # if (a == "正向"):
+                        #     df_tmp = df_tmp[df_tmp['sentiment_value'] > 0]
+                        # elif (a == "負向"):
+                        #     df_tmp = df_tmp[df_tmp['sentiment_value'] < 0]
+                        # else:
+                        df_tmp = df_tmp[df_tmp[a] > 0]
+            # elif (aspect_tab_list[i] == "正向" or aspect_tab_list[i] == "負向"):
+            #     if (aspect_tab_list[i] == "正向"):
+            #         df_tmp = df_select[df_select['sentiment_value']> 0]
+            #     else:
+            #         df_tmp = df_select[df_select['sentiment_value']< 0]
             else:
                 df_tmp = df_select[df_select[aspect_option[i]]> 0]
             # ---------------------------------------- 呈現趨勢圖 --------------------------------------- #
@@ -183,7 +183,7 @@ if start_date and end_date and aspect_option and company_option:
 
             # ---------------------------------------- 呈現 dataframe --------------------------------------- #
             df_tmp.reset_index(drop=True, inplace=True)
-            df_tmp = df_tmp[['company_name', 'vacancies', 'post_time', 'sentence', 'sentiment_value']]
+            df_tmp = df_tmp[['company_name', 'vacancies', 'post_time', 'sentence', '正向', '負向', 'sentiment_value']]
             aspect_trend[i].success(f'{aspect_tab_list[i]}{"" if aspect_tab_list[i] == "共現構面" else "構面"}資料共有 {df_tmp.shape[0]} 筆面試資料!')
             # 在此頁籤中呈現 dataframe
             aspect_trend[i].dataframe(data=df_tmp, use_container_width=True)

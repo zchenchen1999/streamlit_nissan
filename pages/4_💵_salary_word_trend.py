@@ -154,17 +154,17 @@ if start_date and end_date and aspect_option and company_option:
                 df_tmp = df_select
                 for a in aspect_option:
                     if (a != "共現構面"):
-                        if (a == "正向"):
-                            df_tmp = df_tmp[df_tmp['sentiment_value'] > 0]
-                        elif (a == "負向"):
-                            df_tmp = df_tmp[df_tmp['sentiment_value'] < 0]
-                        else:
-                            df_tmp = df_tmp[df_tmp[a] > 0]
-            elif (aspect_tab_list[i] == "正向" or aspect_tab_list[i] == "負向"):
-                if (aspect_tab_list[i] == "正向"):
-                    df_tmp = df_select[df_select['sentiment_value']> 0]
-                else:
-                    df_tmp = df_select[df_select['sentiment_value']< 0]
+                        # if (a == "正向"):
+                        #     df_tmp = df_tmp[df_tmp['sentiment_value'] > 0]
+                        # elif (a == "負向"):
+                        #     df_tmp = df_tmp[df_tmp['sentiment_value'] < 0]
+                        # else:
+                        df_tmp = df_tmp[df_tmp[a] > 0]
+            # elif (aspect_tab_list[i] == "正向" or aspect_tab_list[i] == "負向"):
+            #     if (aspect_tab_list[i] == "正向"):
+            #         df_tmp = df_select[df_select['sentiment_value']> 0]
+            #     else:
+            #         df_tmp = df_select[df_select['sentiment_value']< 0]
             else:
                 df_tmp = df_select[df_select[aspect_option[i]]> 0]
             # ---------------------------------------- 呈現趨勢圖 --------------------------------------- #
