@@ -178,7 +178,7 @@ if start_date and end_date and aspect_option and company_option:
 
             # ---------------------------------------- 呈現 dataframe --------------------------------------- #
             df_tmp.reset_index(drop=True, inplace=True)
-            df_tmp = df_tmp[['company_name', 'vacancies', 'post_time', 'sentence', 'sentiment_value']]
+            df_tmp = df_tmp[['company_name', 'vacancies', 'post_time', 'sentence', '正向', '負向', 'sentiment_value']]
             aspect_trend[i].success(f'{aspect_tab_list[i]}{"" if aspect_tab_list[i] == "共現構面" else "構面"}資料共有 {df_tmp.shape[0]} 筆面試資料!')
             # 在此頁籤中呈現 dataframe
             aspect_trend[i].dataframe(data=df_tmp, use_container_width=True)
