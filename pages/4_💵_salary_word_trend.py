@@ -202,5 +202,28 @@ if start_date and end_date and aspect_option and company_option:
             company_trend[i].success(f'{company_tab_list[i]}共有{df_tmp.shape[0]} 筆面試資料!')
             company_trend[i].dataframe(df_tmp, use_container_width=True)
 
+        # ------------------------------------------- 雷達圖 -------------------------------------- #
+        st.divider()
+        st.subheader("構面討論量雷達圖")
+        fig = go.Figure()
+        # 每一間公司
+        for c in company_option:
+            # 對於每一間公司，統計每個構面總數
+            categories = []
+            count = []
+            for a in aspect_option:
+                if (a != "共現構面"):
+                    categories.append(a)
+                    df_radar_tmp = df_select[(df_select['company_name'] == c) & (df_select[a] > 0)]
+                    count.append(df_radar_tmp.shape[0])
+            fig.add_trace(go.Scatterpolar(
+                r=count,
+                theta=categories,
+                fill='toself',
+                name=c
+            ))
+        fig.update_layout(showlegend=True)
+        st.plotly_chart(fig, use_container_width=True)
+
 else:
     st.warning('請選擇日期、公司、構面!')
