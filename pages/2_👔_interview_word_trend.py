@@ -16,7 +16,10 @@ def get_df(path=None):
     date_format = '%Y.%m.%d'
     try:
         df = pd.read_csv(path)
-        df.drop(['Unnamed: 0'], axis=1,inplace=True)
+        try:
+            df.drop(['Unnamed: 0'], axis=1,inplace=True)
+        except:
+            pass
         date_format = '%Y.%m.%d'
         # 將發文日期轉為 date
         df['post_time'] = df['post_time'].apply(lambda x: datetime.datetime.strptime(x, date_format).date())
