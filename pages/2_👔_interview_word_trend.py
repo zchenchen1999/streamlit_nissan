@@ -212,7 +212,10 @@ if start_date and end_date and aspect_option and company_option:
         # ------------------------------------------- 雷達圖 -------------------------------------- #
         st.divider()
         st.subheader("構面討論量雷達圖")
-        fig = go.Figure()
+        radar_1, radar_2 = st.columns([1, 1])
+        radar_1.text('計數')
+        radar_1.caption('某公司的某構面資料數')
+        radar_fig_1 = go.Figure()
         # 每一間公司
         for c in company_option:
             # 對於每一間公司，統計每個構面總數
@@ -221,15 +224,52 @@ if start_date and end_date and aspect_option and company_option:
             for a in aspect_option:
                 if (a != "共現構面"):
                     categories.append(a)
-                    df_radar_tmp = df_select[(df_select['company_name'] == c) & (df_select[a] > 0)]
-                    count.append(df_radar_tmp.shape[0])
-            fig.add_trace(go.Scatterpolar(
+                    df_radar_tmp_this = df_select[(df_select['company_name'] == c) & (df_select[a] > 0)]
+                    count.append(df_radar_tmp_this.shape[0])
+            radar_fig_1.add_trace(go.Scatterpolar(
                 r=count,
                 theta=categories,
                 fill='toself',
                 name=c
             ))
-        fig.update_layout(showlegend=True)
-        st.plotly_chart(fig, use_container_width=True)
+        radar_fig_1.update_layout(showlegend=True, 
+                legend=dict(
+                yanchor="bottom",  # y轴顶部
+                y=1.1,
+                xanchor="left",  # x轴靠左
+                x=0
+                )
+            )
+        radar_1.plotly_chart(radar_fig_1, use_container_width=True)
+
+        radar_2.text('比例')
+        radar_2.caption('某公司的某構面資料數/某公司總資料數')
+        radar_fig_2 = go.Figure()
+        # 每一間公司
+        for c in company_option:
+            # 對於每一間公司，統計每個構面總數
+            categories = []
+            count = []
+            for a in aspect_option:
+                if (a != "共現構面"):
+                    categories.append(a)
+                    df_radar_tmp_this = df_select[(df_select['company_name'] == c) & (df_select[a] > 0)]
+                    df_radar_tmp_all = df_select[(df_select['company_name'] == c)]
+                    count.append(df_radar_tmp_this.shape[0] / df_radar_tmp_all.shape[0])
+            radar_fig_2.add_trace(go.Scatterpolar(
+                r=count,
+                theta=categories,
+                fill='toself',
+                name=c
+            ))
+        radar_fig_2.update_layout(showlegend=True, 
+                legend=dict(
+                yanchor="bottom",  # y轴顶部
+                y=1.1,
+                xanchor="left",  # x轴靠左
+                x=0
+                )
+            )
+        radar_2.plotly_chart(radar_fig_2, use_container_width=True)
 else:
     st.warning('請選擇日期、公司、構面!')
