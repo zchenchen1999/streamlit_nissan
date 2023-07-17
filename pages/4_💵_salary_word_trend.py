@@ -145,66 +145,6 @@ if start_date and end_date and aspect_option and company_option:
     if (df_select.shape[0] == 0):
         st.warning('時間區間內無資料 ! 檢查是否有選擇公司及構面，或是調整時間範圍')
     else:
-        st.subheader("構面比較每間公司趨勢")
-        # 創建所有構面的 tab 顯示頁面
-        aspect_option.append("共現構面")
-        aspect_tab_list = aspect_option.copy()
-        # aspect_tab_list.append("共現構面")
-        aspect_trend = st.tabs(aspect_tab_list)
-        for i in range(len(aspect_trend)):
-            # 篩選構面
-            if (aspect_tab_list[i] == "共現構面"):
-                # 共現構面利用所有選擇構面去篩選 data
-                df_tmp = df_select
-                for a in aspect_option:
-                    if (a != "共現構面"):
-                        # if (a == "正向"):
-                        #     df_tmp = df_tmp[df_tmp['sentiment_value'] > 0]
-                        # elif (a == "負向"):
-                        #     df_tmp = df_tmp[df_tmp['sentiment_value'] < 0]
-                        # else:
-                        df_tmp = df_tmp[df_tmp[a] > 0]
-            # elif (aspect_tab_list[i] == "正向" or aspect_tab_list[i] == "負向"):
-            #     if (aspect_tab_list[i] == "正向"):
-            #         df_tmp = df_select[df_select['sentiment_value']> 0]
-            #     else:
-            #         df_tmp = df_select[df_select['sentiment_value']< 0]
-            else:
-                df_tmp = df_select[df_select[aspect_option[i]]> 0]
-            # ---------------------------------------- 呈現趨勢圖 --------------------------------------- #
-            # 取得計算資料
-            tidy_data = get_companys_counts_by_aspect(company_option, df_tmp, start_date, end_date)
-            fig = px.line(tidy_data, x=tidy_data.year_month, y=tidy_data.value, color=tidy_data.variable, markers=True)
-            line_chart_title = "[時間區間]："+start_date.strftime("%Y/%m/%d") + "~" + end_date.strftime("%Y/%m/%d")
-            fig.update_layout(title=line_chart_title, template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
-            # 在此頁籤中畫圖
-            aspect_trend[i].plotly_chart(fig, use_container_width=True)
-
-            # ---------------------------------------- 呈現 dataframe --------------------------------------- #
-            df_tmp.reset_index(drop=True, inplace=True)
-            df_tmp = df_tmp[['company_name', 'vacancies', 'post_time', 'sentence', '正向', '負向', 'sentiment_value']]
-            aspect_trend[i].success(f'{aspect_tab_list[i]}{"" if aspect_tab_list[i] == "共現構面" else "構面"}資料共有 {df_tmp.shape[0]} 筆面試資料!')
-            # 在此頁籤中呈現 dataframe
-            aspect_trend[i].dataframe(data=df_tmp, use_container_width=True)
-        
-        st.divider()
-        # ------------------------------------------- 公司為主 tabs -------------------------------------- #
-        st.subheader("公司比較每個構面趨勢")
-        company_tab_list = company_option.copy()
-        company_trend = st.tabs(company_tab_list)
-        for i in range(len(company_trend)):
-            df_tmp = df_select[df_select['company_name'] == company_option[i]]
-            tidy_data = get_aspects_counts_by_company(aspect_option, df_tmp, start_date, end_date)
-            fig = px.line(tidy_data, x=tidy_data.year_month, y=tidy_data.value, color=tidy_data.variable, markers=True)
-            line_chart_title = "[時間區間]："+start_date.strftime("%Y/%m/%d") + "~" + end_date.strftime("%Y/%m/%d")
-            fig.update_layout(title=line_chart_title, template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
-            # 在此頁籤中畫圖
-            company_trend[i].plotly_chart(fig, use_container_width=True)
-            # 顯示 dataframe
-            df_tmp = df_tmp[['company_name', 'vacancies', 'post_time', 'sentence', 'sentiment_value']]
-            company_trend[i].success(f'{company_tab_list[i]}共有{df_tmp.shape[0]} 筆面試資料!')
-            company_trend[i].dataframe(df_tmp, use_container_width=True)
-
         # ------------------------------------------- 雷達圖 -------------------------------------- #
         st.divider()
         st.subheader("構面討論量雷達圖")
@@ -268,5 +208,64 @@ if start_date and end_date and aspect_option and company_option:
             )
         radar_2.plotly_chart(radar_fig_2, use_container_width=True)
 
+        st.subheader("構面比較每間公司趨勢")
+        # 創建所有構面的 tab 顯示頁面
+        aspect_option.append("共現構面")
+        aspect_tab_list = aspect_option.copy()
+        # aspect_tab_list.append("共現構面")
+        aspect_trend = st.tabs(aspect_tab_list)
+        for i in range(len(aspect_trend)):
+            # 篩選構面
+            if (aspect_tab_list[i] == "共現構面"):
+                # 共現構面利用所有選擇構面去篩選 data
+                df_tmp = df_select
+                for a in aspect_option:
+                    if (a != "共現構面"):
+                        # if (a == "正向"):
+                        #     df_tmp = df_tmp[df_tmp['sentiment_value'] > 0]
+                        # elif (a == "負向"):
+                        #     df_tmp = df_tmp[df_tmp['sentiment_value'] < 0]
+                        # else:
+                        df_tmp = df_tmp[df_tmp[a] > 0]
+            # elif (aspect_tab_list[i] == "正向" or aspect_tab_list[i] == "負向"):
+            #     if (aspect_tab_list[i] == "正向"):
+            #         df_tmp = df_select[df_select['sentiment_value']> 0]
+            #     else:
+            #         df_tmp = df_select[df_select['sentiment_value']< 0]
+            else:
+                df_tmp = df_select[df_select[aspect_option[i]]> 0]
+            # ---------------------------------------- 呈現趨勢圖 --------------------------------------- #
+            # 取得計算資料
+            tidy_data = get_companys_counts_by_aspect(company_option, df_tmp, start_date, end_date)
+            fig = px.line(tidy_data, x=tidy_data.year_month, y=tidy_data.value, color=tidy_data.variable, markers=True)
+            line_chart_title = "[時間區間]："+start_date.strftime("%Y/%m/%d") + "~" + end_date.strftime("%Y/%m/%d")
+            fig.update_layout(title=line_chart_title, template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
+            # 在此頁籤中畫圖
+            aspect_trend[i].plotly_chart(fig, use_container_width=True)
+
+            # ---------------------------------------- 呈現 dataframe --------------------------------------- #
+            df_tmp.reset_index(drop=True, inplace=True)
+            df_tmp = df_tmp[['company_name', 'vacancies', 'post_time', 'sentence', '正向', '負向', 'sentiment_value']]
+            aspect_trend[i].success(f'{aspect_tab_list[i]}{"" if aspect_tab_list[i] == "共現構面" else "構面"}資料共有 {df_tmp.shape[0]} 筆面試資料!')
+            # 在此頁籤中呈現 dataframe
+            aspect_trend[i].dataframe(data=df_tmp, use_container_width=True)
+        
+        st.divider()
+        # ------------------------------------------- 公司為主 tabs -------------------------------------- #
+        st.subheader("公司比較每個構面趨勢")
+        company_tab_list = company_option.copy()
+        company_trend = st.tabs(company_tab_list)
+        for i in range(len(company_trend)):
+            df_tmp = df_select[df_select['company_name'] == company_option[i]]
+            tidy_data = get_aspects_counts_by_company(aspect_option, df_tmp, start_date, end_date)
+            fig = px.line(tidy_data, x=tidy_data.year_month, y=tidy_data.value, color=tidy_data.variable, markers=True)
+            line_chart_title = "[時間區間]："+start_date.strftime("%Y/%m/%d") + "~" + end_date.strftime("%Y/%m/%d")
+            fig.update_layout(title=line_chart_title, template='plotly_dark', xaxis_title="日期", yaxis_title="次數", showlegend=True)
+            # 在此頁籤中畫圖
+            company_trend[i].plotly_chart(fig, use_container_width=True)
+            # 顯示 dataframe
+            df_tmp = df_tmp[['company_name', 'vacancies', 'post_time', 'sentence', 'sentiment_value']]
+            company_trend[i].success(f'{company_tab_list[i]}共有{df_tmp.shape[0]} 筆面試資料!')
+            company_trend[i].dataframe(df_tmp, use_container_width=True)
 else:
     st.warning('請選擇日期、公司、構面!')
