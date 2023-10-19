@@ -4,3 +4,4 @@ Code/config.ini
 Code/__pycache__/
 data/
 .DS_Store
+nohup.out

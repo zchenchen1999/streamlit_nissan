@@ -1,0 +1,11 @@
+[Unit]
+Description=streamlit for nissan app
+
+[Service]
+Type=simple
+WorkingDirectory=/home/nissan/stream_app/
+ExecStart=/home/nissan/stream_app/nissan_app.sh
+
+[Install]
+WantedBy=multi-user.target
+Alias=nissan_app.service
