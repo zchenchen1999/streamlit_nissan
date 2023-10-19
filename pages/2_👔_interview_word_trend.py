@@ -28,7 +28,7 @@ def get_df(path=None):
     except:
         print("讀取資料失敗，請檢查路徑")
     return df
-    #會返回一個DF
+    #會返回一個 DF
 df = get_df("data/dtm_corre_cooc/interview/interview_word_dict_dtm_TWM.csv")
 
 # --------------------------------- 設定基本資料 -------------------------------- #
@@ -115,6 +115,38 @@ def get_aspects_counts_by_company(aspects, df, start_date, end_date):
 
     return all_aspect_count
 
+# 計算雷達圖的 df => 1.需要將句子 agg 成文章 2.計算文章出現構面 3.歸類文章情緒
+# 計算文章出現構面
+def check_art_aspect(n):
+    if n >= 1:
+        return 1
+    else: return 0
+# 歸類文章情緒
+def check_art_sentiment(df):
+    if (df['sentiment_value'] > 0):
+        df['正向'] = 1
+        df['負向'] = 0
+    elif (df['sentiment_value'] < 0):
+        df['正向'] = 0
+        df['負向'] = 1
+    else:
+        df['正向'] = 0
+        df['負向'] = 0
+    return df
+def get_art_df(df):
+    agg_dict = {}
+    for i in df.columns:
+        if (i in ['aID', 'company_name', 'vacancies', 'post_time', 'result', 'p_year_month']):
+            agg_dict[i] = 'first'
+        else:
+            agg_dict[i] = 'sum'
+    df = df.groupby('aID').agg(agg_dict)
+    aspect_tmp = [e for e in aspect_list if e not in ('正向', '負向')]
+    # 將大於 1 改為 1
+    df[aspect_tmp] = df[aspect_tmp].applymap(check_art_aspect)
+    # 歸類句子為正向或負向
+    df = df.apply(check_art_sentiment, axis=1)
+    return df
 
 # ---------------------------------- sidebar --------------------------------- #
 
@@ -152,7 +184,8 @@ if start_date and end_date and aspect_option and company_option:
         st.subheader("構面討論量雷達圖")
         radar_1, radar_2 = st.columns([1, 1])
         radar_1.text('計數')
-        radar_1.caption('某公司的某構面資料數')
+        radar_1.caption('某公司的包涵構面文章數')
+        radar_df = get_art_df(df_select)
         radar_fig_1 = go.Figure()
         # 每一間公司
         for c in company_option:
@@ -162,7 +195,7 @@ if start_date and end_date and aspect_option and company_option:
             for a in aspect_option:
                 if (a != "共現構面"):
                     categories.append(a)
-                    df_radar_tmp_this = df_select[(df_select['company_name'] == c) & (df_select[a] > 0)]
+                    df_radar_tmp_this = radar_df[(radar_df['company_name'] == c) & (radar_df[a] > 0)]
                     count.append(df_radar_tmp_this.shape[0])
             radar_fig_1.add_trace(go.Scatterpolar(
                 r=count,
@@ -181,7 +214,7 @@ if start_date and end_date and aspect_option and company_option:
         radar_1.plotly_chart(radar_fig_1, use_container_width=True)
 
         radar_2.text('比例')
-        radar_2.caption('某公司的某構面資料數/某公司總資料數')
+        radar_2.caption('某公司的包含構面文章數/某公司總文章數')
         radar_fig_2 = go.Figure()
         # 每一間公司
         for c in company_option:
@@ -191,8 +224,8 @@ if start_date and end_date and aspect_option and company_option:
             for a in aspect_option:
                 if (a != "共現構面"):
                     categories.append(a)
-                    df_radar_tmp_this = df_select[(df_select['company_name'] == c) & (df_select[a] > 0)]
-                    df_radar_tmp_all = df_select[(df_select['company_name'] == c)]
+                    df_radar_tmp_this = radar_df[(radar_df['company_name'] == c) & (radar_df[a] > 0)]
+                    df_radar_tmp_all = radar_df[(radar_df['company_name'] == c)]
                     count.append(df_radar_tmp_this.shape[0] / df_radar_tmp_all.shape[0])
             radar_fig_2.add_trace(go.Scatterpolar(
                 r=count,
