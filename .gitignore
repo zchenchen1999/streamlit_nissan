@@ -1,0 +1,6 @@
+data/expert_embeddings/
+data/expert_data/
+Code/config.ini
+Code/__pycache__/
+data/
+.DS_Store
