@@ -84,7 +84,10 @@ qa = RetrievalQA.from_chain_type(llm=ChatOpenAI(model="gpt-3.5-turbo-16k-0613", 
 
 def Inference(question):
     result = qa({"query": question})
-    return result
+    articles = []
+    for i in result['source_documents']:
+        articles.append(i.page_content)
+    return result, articles
 
 
 # Inference(qa, "請問裕隆最近有什麼正向、負向討論？")

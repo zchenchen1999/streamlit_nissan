@@ -14,6 +14,8 @@ from Code import expert
 
 ## ============================load key================================##
 import configparser
+from streamlit_modal import Modal
+import streamlit.components.v1 as components
 # # 設置 API KEY
 # config = configparser.ConfigParser()
 # config.read('config.ini')
@@ -37,11 +39,35 @@ if prompt := st.chat_input():
     st.chat_message("user").write(prompt)
     # response = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=st.session_state.messages)
     # response = expert.Inference(st.session_state.messages)
-    response = expert.Inference(prompt)
+    response, retrieval_articles = expert.Inference(prompt)
     # msg = response.choices[0].message
     msg = {
         "content": response['result'],
-        "role": "assistant"
+        "role": "assistant",
+        "article":retrieval_articles
       }
     st.session_state.messages.append(msg)
     st.chat_message("assistant").write(msg['content'])
+
+modal = Modal(key="Demo Modal", title='相關評論')
+open_modal = st.button("Open", key="custom_button")
+if open_modal:
+    modal.open()
+if modal.is_open():
+    with modal.container():
+        if(len(st.session_state.messages[-1]['article']) > 0 ):
+            for article in st.session_state.messages[-1]['article']:
+                st.markdown(f"參考文章:{article}")
+        else:
+            st.markdown('尚無相關評論內容')
+st.markdown(
+    """
+    <style>
+    .streamlit-modal-content {
+        width: 400px;  /* 設定寬度 */
+        height: 200px; /* 設定高度 */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
