@@ -56,18 +56,27 @@ if open_modal:
 if modal.is_open():
     with modal.container():
         if(len(st.session_state.messages[-1]['article']) > 0 ):
+            html_string = ""
             for article in st.session_state.messages[-1]['article']:
-                st.markdown(f"參考文章:{article}")
+                html_string+= f'''
+                    <h3>參考文章</h3>
+                    {article}
+                    <br>
+                '''
+            components.html(html_string, height=300, scrolling=True)
+                # st.markdown(f"參考文章:{article}")
         else:
-            st.markdown('尚無相關評論內容')
+            # st.markdown('尚無相關評論內容')
+            components.html('尚無參考文章', height=100, scrolling=True)
 st.markdown(
     """
     <style>
     .streamlit-modal-content {
-        width: 400px;  /* 設定寬度 */
-        height: 200px; /* 設定高度 */
+        width: 500px;  /* 設定寬度 */
+        
     }
     </style>
     """,
     unsafe_allow_html=True
 )
+#height: 200px; /* 設定高度 */
